@@ -237,6 +237,14 @@ size_t SceneModel::getCountElementsInContainer(quintptr id_sdk) const
     return c->getCountElements();
 }
 
+quintptr SceneModel::getIdRootContainer() const
+{
+    if(!m_container)
+        return 0;
+
+    return m_container->getId();
+}
+
 PElement SceneModel::getElementById(quintptr id_element) const
 {
     return m_mapElements[id_element];

@@ -7,6 +7,9 @@ TARGET = HiAsm_builder
 CONFIG += console
 CONFIG -= app_bundle
 
+#ru Тестовый каталог
+DESTDIR += "D:/dev/Qt/MainProjects/HiAsm_builder/test"
+
 TEMPLATE = app
 
 #Параметры логгера

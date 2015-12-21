@@ -8,7 +8,6 @@
 //STL
 
 //Qt
-#include <QFont>
 #include <QTemporaryFile>
 #include <QDebug>
 #include <QUuid>
