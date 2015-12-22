@@ -399,36 +399,30 @@ namespace cgt
         return m_cgt->elGetData(e);
     }
 
-
     void elSetData(quintptr e, quintptr data)
     {
         m_cgt->elSetData(e, data);
     }
-
 
     DataTypes ptGetDataType(quintptr p)
     {
         return m_cgt->ptGetDataType(p);
     }
 
-
     quintptr elGetParent(quintptr e)
     {
         return m_cgt->elGetParent(e);
     }
-
 
     int elGetPropertyListCount(quintptr e)
     {
         return m_cgt->elGetPropertyListCount(e);
     }
 
-
     quintptr elGetPropertyListItem(quintptr e, int i)
     {
         return m_cgt->elGetPropertyListItem(e, i);
     }
-
 
     const char *plGetName(quintptr p)
     {
@@ -529,5 +523,4 @@ namespace cgt
     {
         return m_cgt->propSaveToFile(p, fileName);
     }
-
 }
