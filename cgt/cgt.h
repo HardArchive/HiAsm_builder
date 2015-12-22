@@ -21,7 +21,7 @@ namespace fcgt
     bool isEditMultiEx(const ElementClass &eClass);
     bool isPolyMulti(const ElementClass &eClass);
 
-    const char *strToPChar(const QString &str);
+    const char *strToCString(const QString &str);
 }
 
 namespace cgt

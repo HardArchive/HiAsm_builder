@@ -36,7 +36,18 @@ private:
 
     //Параметры CGT
     bool m_isDebug{};
-    TCgtParams m_cgtParams;
+    int m_debugMode{};
+    int m_debugServerPort{};
+    int m_debugClientPort{};
+    int m_sdeWidth{};
+    int m_sdeHeight{};
+    QString m_codePath;
+    QString m_projectPath;
+    QString m_hiasmVersion;
+    QString m_userName;
+    QString m_userMail;
+    QString m_projectName;
+    QString m_compiler;
 
 private:
     Q_PROPERTY(PSceneModel model READ getModel)
@@ -97,8 +108,46 @@ public:
     bool resIsEmpty() const;
 
     //Параметры CGT
-    bool isDebug() const;
     void getCgtParam(CgtParams index, void *buf) const;
+
+    bool getIsDebug() const;
+    void setIsDebug(bool isDebug);
+
+    int getDebugMode() const;
+    void setDebugMode(int debugMode);
+
+    int getDebugServerPort() const;
+    void setDebugServerPort(int debugServerPort);
+
+    int getDebugClientPort() const;
+    void setDebugClientPort(int debugClientPort);
+
+    int getSdeWidth() const;
+    void setSdeWidth(int sdeWidth);
+
+    int getSdeHeight() const;
+    void setSdeHeight(int sdeHeight);
+
+    QString getCodePath() const;
+    void setCodePath(const QString &codePath);
+
+    QString getProjectPath() const;
+    void setProjectPath(const QString &projectPath);
+
+    QString getHiasmVersion() const;
+    void setHiasmVersion(const QString &hiasmVersion);
+
+    QString getUserName() const;
+    void setUserName(const QString &userName);
+
+    QString getUserMail() const;
+    void setUserMail(const QString &userMail);
+
+    QString getProjectName() const;
+    void setProjectName(const QString &projectName);
+
+    QString getCompiler() const;
+    void setCompiler(const QString &compiler);
 };
 
 Q_DECLARE_METATYPE(PSceneModel)

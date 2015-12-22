@@ -55,7 +55,7 @@ namespace fcgt
         return eClass == CI_PolyMulti;
     }
 
-    const char *strToPChar(const QString &str)
+    const char *strToCString(const QString &str)
     {
         char *buf = new char[uint(str.size() + 1)];
         strcpy(buf, str.toStdString().c_str());

@@ -106,7 +106,7 @@ namespace EmulateCgt
         if (!e)
             return nullptr;
 
-        return fcgt::strToPChar(e->getCodeName());
+        return fcgt::strToCString(e->getCodeName());
     }
 
     //ru Возвращает имя класса элемента
@@ -116,7 +116,7 @@ namespace EmulateCgt
         if (!e)
             return nullptr;
 
-        return fcgt::strToPChar(e->getClassName());
+        return fcgt::strToCString(e->getClassName());
     }
 
     //ru Возвращает водержимое поля Sub из конфигурационного INI-файла элемента.
@@ -274,7 +274,7 @@ namespace EmulateCgt
         if (!p)
             return nullptr;
 
-        return fcgt::strToPChar(p->getName());
+        return fcgt::strToCString(p->getName());
     }
 
     //ru Получаем ID родителя (элемент) точки.
@@ -305,7 +305,7 @@ namespace EmulateCgt
         if (!p)
             return nullptr;
 
-        return fcgt::strToPChar(p->getDpeName());
+        return fcgt::strToCString(p->getDpeName());
     }
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ свойства элемента ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -326,7 +326,7 @@ namespace EmulateCgt
         if (!p)
             return nullptr;
 
-        return fcgt::strToPChar(p->getName());
+        return fcgt::strToCString(p->getName());
     }
 
     //ru Возвращает значение свойства в виде указателя на данные.
@@ -405,14 +405,14 @@ namespace EmulateCgt
             if (!v)
                 return 0;
 
-            return fcgt::strToPChar(v->toString());
+            return fcgt::strToCString(v->toString());
         }
 
         PProperty p = m_model->getPropertyById(id_prop);
         if (!p)
             return 0;
 
-        return fcgt::strToPChar(p->toString());
+        return fcgt::strToCString(p->toString());
     }
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ ресурсы ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -520,7 +520,7 @@ namespace EmulateCgt
         if (!v)
             return nullptr;
 
-        return fcgt::strToPChar(v->getArrayItemName(index));
+        return fcgt::strToCString(v->getArrayItemName(index));
     }
 
     //ru Получаем элемент (id_arrayValue) массива  по индексу.
@@ -553,7 +553,7 @@ namespace EmulateCgt
     EXPORT int isDebug(quintptr id_element)
     {
         Q_UNUSED(id_element)
-        return m_model->isDebug();
+        return m_model->getIsDebug();
     }
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ работа с данными ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -575,7 +575,7 @@ namespace EmulateCgt
         if (!v)
             return nullptr;
 
-        return fcgt::strToPChar(v->toString());
+        return fcgt::strToCString(v->toString());
     }
 
     //ru Возвращает данные в формате: целое число.
@@ -610,7 +610,7 @@ namespace EmulateCgt
         if (!font)
             return nullptr;
 
-        return fcgt::strToPChar(font->name);
+        return fcgt::strToCString(font->name);
     }
     //ru Возвращает размер шрифта.
     EXPORT int fntSize(quintptr id_font)
@@ -787,7 +787,7 @@ namespace EmulateCgt
         if (!p)
             return nullptr;
 
-        return fcgt::strToPChar(p->getInfo());
+        return fcgt::strToCString(p->getInfo());
     }
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ свойства элемента ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -874,7 +874,7 @@ namespace EmulateCgt
         if (!c)
             return nullptr;
 
-        return fcgt::strToPChar(c->getName());
+        return fcgt::strToCString(c->getName());
     }
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ схема ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -902,7 +902,7 @@ namespace EmulateCgt
         if (!e)
             return nullptr;
 
-        return fcgt::strToPChar(e->getInterface());
+        return fcgt::strToCString(e->getInterface());
     }
 
     //ru Возвращает список классов, от которых наследуется элемент
@@ -913,7 +913,7 @@ namespace EmulateCgt
         if (!e)
             return nullptr;
 
-        return fcgt::strToPChar(e->getInherit());
+        return fcgt::strToCString(e->getInherit());
     }
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ ресурсы ~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -219,23 +219,6 @@ const static QMap<int, QString> CgtParamsMap{
     {PARAM_SDE_HEIGHT, "PARAM_SDE_HEIGHT"},
     {PARAM_COMPILER, "PARAM_COMPILER"}
 };
-struct TCgtParams {
-    QString CODE_PATH{};
-    int DEBUG_MODE{};
-    int DEBUG_SERVER_PORT{};
-    int DEBUG_CLIENT_PORT{};
-    QString PROJECT_PATH{};
-    QString HIASM_VERSION{};
-    QString USER_NAME{};
-    QString USER_MAIL{};
-    QString PROJECT_NAME{};
-    uint SDE_WIDTH{};
-    uint SDE_HEIGHT{};
-    QString COMPILER{};
-};
-typedef TCgtParams *PCgtParams;
-Q_DECLARE_METATYPE(TCgtParams)
-
 
 //!ru Ошибки при работе с библиотекой кодогенератора
 enum CgResult {
@@ -282,6 +265,46 @@ enum ProjectFlags {
     CGMP_FORM_EDIT = 0x08
 };
 typedef QFlags<ProjectFlags> ProjectFlgs;
+
+/*
+ * Описание интерфейса make_*
+ *
+*/
+
+struct TBuildMakePrjRec {
+    void *result;
+    const char *prjFilename;
+    const char *compiler;
+} ;
+
+struct TBuildCompliteRec {
+    const char *prjFilename;
+    const char *appFilename;
+};
+
+struct TBuildParams {
+    int flags;
+};
+
+struct TBuildRunRec {
+    const char *FileName;
+    int Mode;
+    int ServerPort;
+    int ClientPort;
+    void *data;
+};
+
+typedef int(*t_buildCompliteProc)(const TBuildCompliteRec &params);
+typedef int(*t_buildGetParamsProc)(TBuildParams &params);
+typedef int(*t_buildMakePrj)(const TBuildMakePrjRec &params);
+typedef int(*t_buildRunProc)(TBuildRunRec &params);
+typedef int(*t_buildStopProc)(TBuildRunRec &params);
+
+extern t_buildGetParamsProc buildGetParamsProc;
+extern t_buildMakePrj buildMakePrj;
+extern t_buildCompliteProc buildCompliteProc;
+extern t_buildRunProc buildRunProc;
+extern t_buildStopProc buildStopProc;
 
 /*
  * Описание интерфейса библиотеки CodeGen.

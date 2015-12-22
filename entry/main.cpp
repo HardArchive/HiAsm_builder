@@ -9,7 +9,6 @@
 //Qt
 #include <QCoreApplication>
 
-
 //Переопределение вывода отладочных сообщений
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
@@ -58,24 +57,53 @@ void initLogger()
 
 int main(int argc, char *argv[])
 {
+    //SetConsoleCP(1251);
+    //SetConsoleOutputCP(1251);
+
     QCoreApplication a(argc, argv);
+
+    //Задаём информацию о приложении
+    QCoreApplication::setOrganizationName(APP_COMPANY);
+    QCoreApplication::setOrganizationDomain(APP_COPYRIGHT);
+    QCoreApplication::setApplicationName(APP_PRODUCT);
+    QCoreApplication::setApplicationVersion(APP_VERSION);
+
     initLogger();
 
-    const QString fileName = "CodeGen.dll";
-    const QString pathForPackage = "Elements/CNET";
-    const QString fullPathCodeGen = pathForPackage + QDir::separator() + fileName;
+    const QString packagePath = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "Elements/CNET/");
+    const QString codePath = QDir::toNativeSeparators(packagePath + "code/");
+    const QString makePath = QDir::toNativeSeparators(packagePath + "make/");
+    const QString codeGenFile = "CodeGen.dll";
+    const QString makeExe = "make_CNET.dll";
+    const QString fullPathCodeGen = packagePath + codeGenFile;
+    const QString fullPathMakeExe = makePath + makeExe;
+
+    //ru Загружаем make_CNET в память
+    if (!QFile::exists(fullPathMakeExe)) {
+        qCritical(qUtf8Printable(QString("%1 library not found!").arg(qPrintable(makeExe))));
+    }
+    QLibrary libMakeExe(fullPathMakeExe);
+    if (!libMakeExe.load()) {
+        qCritical("%s library not found!", qPrintable(makeExe));
+        exit(0);
+    }
+    qInfo("%s library successfully loaded.", qPrintable(makeExe));
+
+    //ru Определение функций
+    buildGetParamsProc = reinterpret_cast<t_buildGetParamsProc>(libMakeExe.resolve("buildGetParamsProc"));
+    buildMakePrj = reinterpret_cast<t_buildMakePrj>(libMakeExe.resolve("buildMakePrj"));
+    buildCompliteProc = reinterpret_cast<t_buildCompliteProc>(libMakeExe.resolve("buildCompliteProc"));
 
     //ru Загружаем CodeGen в память
     if (!QFile::exists(fullPathCodeGen)) {
-        qCritical(qUtf8Printable(QString("%1 library not found!").arg(qPrintable(fileName))));
+        qCritical(qUtf8Printable(QString("%1 library not found!").arg(qPrintable(codeGenFile))));
     }
     QLibrary libCodeGen(fullPathCodeGen);
     if (!libCodeGen.load()) {
-        qCritical("%s library not found!", qPrintable(fileName));
+        qCritical("%s library not found!", qPrintable(codeGenFile));
         exit(0);
     }
-
-    qInfo("%s library successfully loaded.", qPrintable(fileName));
+    qInfo("%s library successfully loaded.", qPrintable(codeGenFile));
 
     //ru Определение функций кодогенератора
     buildPrepareProc = reinterpret_cast<t_buildPrepareProc>(libCodeGen.resolve("buildPrepareProc"));
@@ -89,20 +117,47 @@ int main(int argc, char *argv[])
         qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
         exit(0);
     }
-    qInfo("Model is successful loaded.");
+
+    qInfo("Set params for Model.");
+    model.setProjectPath(QDir::currentPath());
+    model.setCodePath(codePath);
 
     qInfo("Initialize EmulateCgt and TBuildProcessRec.");
     EmulateCgt::setSceneModel(&model);
-    TBuildProcessRec rec(EmulateCgt::getCgt(), model.getIdRootContainer());
 
     qInfo("Call func buildProcessProc from CodeGen.dll...");
+    TBuildProcessRec rec(EmulateCgt::getCgt(), model.getIdRootContainer());
     buildProcessProc(rec);
 
-    qInfo("Compile resources...");
+    qInfo("Compile resources.");
     model.compileResources();
+
+    qInfo("Use make_*.dll library.");
+    TBuildParams buildParams;
+    buildParams.flags = 0;
+
+    TBuildMakePrjRec buildMakePrjRec;
+    buildMakePrjRec.compiler = fcgt::strToCString(model.getCompiler());
+    buildMakePrjRec.prjFilename = fcgt::strToCString(codePath + model.getProjectName() + ".csproj");
+    buildMakePrjRec.result = rec.result;
+
+    TBuildCompliteRec buildCompliteRec;
+    buildCompliteRec.appFilename = fcgt::strToCString(QDir::currentPath() + model.getProjectName() + ".exe");
+    buildCompliteRec.prjFilename = fcgt::strToCString(codePath + model.getProjectName() + ".csproj");
+
+    buildGetParamsProc(buildParams);
+    buildMakePrj(buildMakePrjRec);
+    buildCompliteProc(buildCompliteRec);
 
     qInfo("Unload CodeGen library.");
     libCodeGen.unload();
+
+    qInfo("Build project.");
+    QString storeCurrentPath = QDir::currentPath();
+    QDir::setCurrent(codePath);
+    QString executeCompiler = QString("C:/Windows/Microsoft.NET/Framework/v4.0.30319/msbuild.exe \"%1\" /v:m").arg(model.getProjectName() + ".csproj");
+    QProcess::execute(executeCompiler);
+    QDir::setCurrent(storeCurrentPath);
 
     return a.exec();
 }
