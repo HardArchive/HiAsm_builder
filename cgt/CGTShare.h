@@ -3,6 +3,7 @@
 //Project
 
 //STL
+#include <functional>
 
 //Qt
 #include <QtCore>
@@ -282,13 +283,14 @@ enum ProjectFlags {
 };
 typedef QFlags<ProjectFlags> ProjectFlgs;
 
-
-//!ru Структуры необходимые для работы кодогенератора и интерфейса.
+/*
+ * Описание интерфейса библиотеки CodeGen.
+ *
+*/
 
 struct TCodeGenTools;
 typedef TCodeGenTools *PCodeGenTools;
 
-//Требуется для export функции - CheckVersionProc.
 struct THiAsmVersion {
     short int major{};
     short int minor{};
@@ -299,10 +301,21 @@ struct TBuildProcessRec {
     PCodeGenTools cgt{};
     quintptr sdk{};
     void *result{};
+
+    explicit TBuildProcessRec(PCodeGenTools _cgt, quintptr _sdk) : cgt(_cgt), sdk(_sdk) {}
 };
+
+typedef int(*t_buildPrepareProc)(void *params);
+typedef int(*t_buildProcessProc)(TBuildProcessRec &params);
+typedef int(*t_checkVersionProc)(const THiAsmVersion &params);
+
+extern t_buildPrepareProc buildPrepareProc;
+extern t_buildProcessProc buildProcessProc;
+extern t_checkVersionProc checkVersionProc;
 
 struct TCodeGenTools {
 #define CALLBACK __stdcall
+
     //!~~~~~~~~~~~~~~~~~~~~~~~~ контейнер ~~~~~~~~~~~~~~~~~~~~~~~~~~
     //ru Возвращает количество элементов в контейнере.
     CALLBACK int (*sdkGetCount)(quintptr SDK);

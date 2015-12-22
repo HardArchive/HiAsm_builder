@@ -17,17 +17,7 @@
 SceneModel::SceneModel(QObject *parent):
     QObject(parent)
 {
-    //ru Собираем данные о среде
-    collectingData(cgt::getMainSDK());
 
-    //ru Запуск процесса сборка данных о схеме
-    m_container = new Container(cgt::getMainSDK(), this);
-}
-
-SceneModel::SceneModel(const QJsonDocument &doc, QObject *parent):
-    QObject(parent)
-{
-    deserialize(doc);
 }
 
 SceneModel::~SceneModel()
@@ -184,6 +174,15 @@ PSceneModel SceneModel::getModel()
     return this;
 }
 
+void SceneModel::initializeFromCgt()
+{
+    //ru Собираем данные о среде
+    collectingData(cgt::getMainSDK());
+
+    //ru Запуск процесса сборка данных о схеме
+    m_container = new Container(cgt::getMainSDK(), this);
+}
+
 void SceneModel::save()
 {
     QJsonDocument doc = serialize();
@@ -239,7 +238,7 @@ size_t SceneModel::getCountElementsInContainer(quintptr id_sdk) const
 
 quintptr SceneModel::getIdRootContainer() const
 {
-    if(!m_container)
+    if (!m_container)
         return 0;
 
     return m_container->getId();

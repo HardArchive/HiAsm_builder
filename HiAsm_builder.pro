@@ -21,4 +21,5 @@ DEFINES += ELPP_QT_LOGGING \
            ELPP_NO_DEFAULT_LOG_FILE
 
 SOURCES += $$files("*.cpp", true)
+
 HEADERS += $$files("*.h", true)

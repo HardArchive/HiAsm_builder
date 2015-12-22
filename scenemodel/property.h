@@ -2,10 +2,9 @@
 
 //Project
 #include "types.h"
-
+#include "value.h"
 #include "valuetypes.h"
 #include "cgt/CGTShare.h"
-#include "value.h"
 
 //STL
 

@@ -66,10 +66,11 @@ namespace fcgt
 
 namespace cgt
 {
-//!~~~~~~~~~~~~~~~~~~~~~ служебные функции ~~~~~~~~~~~~~~~~~~~~~~~
-static TBuildProcessRec *m_buildProcess;
-static PCodeGenTools m_origCgt{};
-static PCodeGenTools m_cgt{};
+    //!~~~~~~~~~~~~~~~~~~~~~ служебные функции ~~~~~~~~~~~~~~~~~~~~~~~
+    static TBuildProcessRec *m_buildProcess;
+    static PCodeGenTools m_origCgt{};
+    static PCodeGenTools m_cgt{};
+
     static quintptr m_sdk{};
 
     //ru Инициализация параметров

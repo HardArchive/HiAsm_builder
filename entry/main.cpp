@@ -1,6 +1,5 @@
 //Project
 #include "cgt/cgt.h"
-#include "cgt/proxycgt.h"
 #include "cgt/emulatecgt.h"
 #include "scenemodel/scenemodel.h"
 #include "logger.h"
@@ -9,18 +8,7 @@
 
 //Qt
 #include <QCoreApplication>
-#include <QDir>
-#include <QLibrary>
 
-//Типы функций
-typedef int(*t_buildPrepareProc)(void *params);
-typedef int(*t_buildProcessProc)(TBuildProcessRec &params);
-typedef int(*t_CheckVersionProc)(const THiAsmVersion &params);
-
-//Объявление прототипов функций оригинального кодогенератора
-static t_buildPrepareProc buildPrepareProc;
-static t_buildProcessProc buildProcessProc;
-static t_CheckVersionProc CheckVersionProc;
 
 //Переопределение вывода отладочных сообщений
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
@@ -73,35 +61,35 @@ int main(int argc, char *argv[])
     QCoreApplication a(argc, argv);
     initLogger();
 
-    QString codegenFileName = "CodeGen.dll";
-    QString filePathCodeGen = "Elements/CNET/CodeGen.dll";
+    const QString fileName = "CodeGen.dll";
+    const QString pathForPackage = "Elements/CNET";
+    const QString fullPathCodeGen = pathForPackage + QDir::separator() + fileName;
 
-    //ru Загружаем оригинальную DLL в память
-    if (!QFile::exists(filePathCodeGen)) {
-        qCritical("«%s» library not found!", qPrintable(codegenFileName));
+    //ru Загружаем CodeGen в память
+    if (!QFile::exists(fullPathCodeGen)) {
+        qCritical(qUtf8Printable(QString("%1 library not found!").arg(fileName)));
     }
-    QLibrary codegen;
-    codegen.setFileName(filePathCodeGen);
-    if (codegen.load())
-        qInfo("%s library successfully loaded.", qUtf8Printable(codegenFileName));
+    QLibrary libCodeGen(fullPathCodeGen);
+    if (libCodeGen.load())
+        qInfo(qUtf8Printable(QString("%1 library successfully loaded.").arg(fileName)));
     else
-        qCritical("%s library is not loaded.", qUtf8Printable(codegenFileName));
+        qCritical(qUtf8Printable(QString("%1 library not found!").arg(fileName)));
 
-    //ru Определение прототипов функций кодогенератора
-    buildPrepareProc = reinterpret_cast<t_buildPrepareProc>(codegen.resolve("buildPrepareProc"));
-    buildProcessProc = reinterpret_cast<t_buildProcessProc>(codegen.resolve("buildProcessProc"));
-    CheckVersionProc = reinterpret_cast<t_CheckVersionProc>(codegen.resolve("CheckVersionProc"));
+    //ru Определение функций кодогенератора
+    buildPrepareProc = reinterpret_cast<t_buildPrepareProc>(libCodeGen.resolve("buildPrepareProc"));
+    buildProcessProc = reinterpret_cast<t_buildProcessProc>(libCodeGen.resolve("buildProcessProc"));
+    checkVersionProc = reinterpret_cast<t_checkVersionProc>(libCodeGen.resolve("CheckVersionProc"));
 
     QFile file("test.json");
     file.open(QIODevice::ReadOnly);
-
     QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-    SceneModel model(doc);
+
+    SceneModel model;
+    model.deserialize(doc);
 
     EmulateCgt::setSceneModel(&model);
-    TBuildProcessRec rec;
-    rec.sdk = model.getIdRootContainer();
-    rec.cgt = EmulateCgt::getCgt();
+
+    TBuildProcessRec rec(EmulateCgt::getCgt(), model.getIdRootContainer());
     buildProcessProc(rec);
 
     return a.exec();

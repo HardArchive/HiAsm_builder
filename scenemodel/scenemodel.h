@@ -43,7 +43,6 @@ private:
 
 public:
     explicit SceneModel(QObject *parent = 0);
-    explicit SceneModel(const QJsonDocument &doc, QObject *parent = 0);
     virtual ~SceneModel();
 
 private:
@@ -58,6 +57,7 @@ public:
 
     //Model
     PSceneModel getModel();
+    void initializeFromCgt();
     void save();
 
     //Map
