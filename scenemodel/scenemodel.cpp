@@ -88,42 +88,6 @@ void SceneModel::collectingData(quintptr id_sdk)
     m_cgtParams.COMPILER = QString::fromLocal8Bit(buf);
 }
 
-void SceneModel::deleteResources()
-{
-    for (const auto &filePath : m_resourcesToDelete) {
-        QFile::remove(filePath);
-    }
-    m_resourcesToDelete.clear();
-}
-
-void SceneModel::compileResources()
-{
-    static const QString NAME_DIR_OUTPUT_RESOURCES = "compiler";
-    static const QString NAME_FILE_RC = "allres.rc";
-    static const QString NAME_FILE_RES = "allres.res";
-    static const QString NAME_FILE_GORC = "GoRC.exe";
-    QString current = QDir::currentPath();
-    QString outputResPath = current + QDir::separator() + NAME_DIR_OUTPUT_RESOURCES;
-    QDir::setCurrent(outputResPath);
-
-    QFile file(NAME_FILE_RC);
-    file.open(QIODevice::WriteOnly);
-    QTextStream write(&file);
-
-    for (const auto &nameRes : m_resourcesForCompile.keys()) {
-        write << QString("%1 %2 %1.dat\r\n").arg(nameRes).arg(m_resourcesForCompile[nameRes]);
-    }
-
-    write << "ASMA ICON \"..\\int\\main.ico\"";
-    file.close();
-
-    //QProcess::execute(QString("%1 /r %2").arg(NAME_FILE_GORC).arg(NAME_FILE_RC));
-
-    //QFile::copy(NAME_FILE_RES, m_cgtParams.CODE_PATH + QDir::separator() + NAME_FILE_RES);
-
-    QDir::setCurrent(current);
-}
-
 QJsonDocument SceneModel::serialize()
 {
     QVariantMap cgtParams;
@@ -183,13 +147,26 @@ void SceneModel::initializeFromCgt()
     m_container = new Container(cgt::getMainSDK(), this);
 }
 
-void SceneModel::save()
+bool SceneModel::saveModel(const QString &filePath)
 {
     QJsonDocument doc = serialize();
+    QFile file(filePath);
+    if (!file.open(QIODevice::WriteOnly))
+        return false;
 
-    QFile file("test.json");
-    file.open(QIODevice::WriteOnly);
     file.write(doc.toJson());
+    file.close();
+    return true;
+}
+
+bool SceneModel::loadModel(const QString &filePath)
+{
+    QFile file(filePath);
+    if (!file.open(QIODevice::ReadOnly))
+        return false;
+
+    deserialize(QJsonDocument::fromJson(file.readAll()));
+    return true;
 }
 
 void SceneModel::addContainerToMap(PContainer id_sdk)
@@ -348,6 +325,41 @@ const char *SceneModel::addStringRes(const QString &str)
 
     return fcgt::strToPChar(fileName);
 }
+void SceneModel::deleteResources()
+{
+    for (const auto &filePath : m_resourcesToDelete) {
+        QFile::remove(filePath);
+    }
+    m_resourcesToDelete.clear();
+}
+
+void SceneModel::compileResources()
+{
+    static const QString NAME_DIR_OUTPUT_RESOURCES = "compiler";
+    static const QString NAME_FILE_RC = "allres.rc";
+    static const QString NAME_FILE_RES = "allres.res";
+    static const QString NAME_FILE_GORC = "GoRC.exe";
+    QString current = QDir::currentPath();
+    QString outputResPath = current + QDir::separator() + NAME_DIR_OUTPUT_RESOURCES;
+    QDir::setCurrent(outputResPath);
+
+    QFile file(NAME_FILE_RC);
+    file.open(QIODevice::WriteOnly);
+    QTextStream write(&file);
+
+    for (const auto &nameRes : m_resourcesForCompile.keys()) {
+        write << QString("%1 %2 %1.dat\r\n").arg(nameRes).arg(m_resourcesForCompile[nameRes]);
+    }
+
+    write << "ASMA ICON \"..\\int\\main.ico\"";
+    file.close();
+
+    QProcess::execute(QString("%1 /r %2").arg(NAME_FILE_GORC).arg(NAME_FILE_RC));
+    QFile::copy(NAME_FILE_RES, m_cgtParams.CODE_PATH + QDir::separator() + NAME_FILE_RES);
+
+    QDir::setCurrent(current);
+}
+
 
 int SceneModel::addResList(const QString &filePath)
 {

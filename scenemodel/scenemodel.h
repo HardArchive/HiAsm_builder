@@ -47,8 +47,6 @@ public:
 
 private:
     void collectingData(quintptr id_sdk);
-    void deleteResources();
-    void compileResources();
 
 public:
     //Serialize
@@ -58,7 +56,8 @@ public:
     //Model
     PSceneModel getModel();
     void initializeFromCgt();
-    void save();
+    bool saveModel(const QString &filePath);
+    bool loadModel(const QString &filePath);
 
     //Map
     void addContainerToMap(PContainer id_sdk);
@@ -91,6 +90,8 @@ public:
     //Resource
     const char *addStreamRes(quintptr id_prop);
     const char *addStringRes(const QString &str);
+    void deleteResources();
+    void compileResources();
 
     int addResList(const QString &filePath);
     bool resIsEmpty() const;

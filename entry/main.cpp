@@ -67,30 +67,42 @@ int main(int argc, char *argv[])
 
     //ru Загружаем CodeGen в память
     if (!QFile::exists(fullPathCodeGen)) {
-        qCritical(qUtf8Printable(QString("%1 library not found!").arg(fileName)));
+        qCritical(qUtf8Printable(QString("%1 library not found!").arg(qPrintable(fileName))));
     }
     QLibrary libCodeGen(fullPathCodeGen);
-    if (libCodeGen.load())
-        qInfo(qUtf8Printable(QString("%1 library successfully loaded.").arg(fileName)));
-    else
-        qCritical(qUtf8Printable(QString("%1 library not found!").arg(fileName)));
+    if (!libCodeGen.load()) {
+        qCritical("%s library not found!", qPrintable(fileName));
+        exit(0);
+    }
+
+    qInfo("%s library successfully loaded.", qPrintable(fileName));
 
     //ru Определение функций кодогенератора
     buildPrepareProc = reinterpret_cast<t_buildPrepareProc>(libCodeGen.resolve("buildPrepareProc"));
     buildProcessProc = reinterpret_cast<t_buildProcessProc>(libCodeGen.resolve("buildProcessProc"));
     checkVersionProc = reinterpret_cast<t_checkVersionProc>(libCodeGen.resolve("CheckVersionProc"));
 
-    QFile file("test.json");
-    file.open(QIODevice::ReadOnly);
-    QJsonDocument doc = QJsonDocument::fromJson(file.readAll());
-
+    const QString modelFilePath = "test.json";
+    qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
     SceneModel model;
-    model.deserialize(doc);
+    if (!model.loadModel(modelFilePath)) {
+        qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
+        exit(0);
+    }
+    qInfo("Model is successful loaded.");
 
+    qInfo("Initialize EmulateCgt and TBuildProcessRec.");
     EmulateCgt::setSceneModel(&model);
-
     TBuildProcessRec rec(EmulateCgt::getCgt(), model.getIdRootContainer());
+
+    qInfo("Call func buildProcessProc from CodeGen.dll...");
     buildProcessProc(rec);
+
+    qInfo("Compile resources...");
+    model.compileResources();
+
+    qInfo("Unload CodeGen library.");
+    libCodeGen.unload();
 
     return a.exec();
 }
