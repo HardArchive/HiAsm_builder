@@ -27,9 +27,6 @@ private:
     //Container
     PContainer m_container{};
 
-    //Property
-    SharedValue m_propArrayValue;
-
     //Resource
     QSet<QString> m_resourcesToDelete;
     QMap<QString, QString> m_resourcesForCompile;
@@ -89,8 +86,6 @@ public:
 
     //Property
     PProperty getPropertyById(quintptr id_prop) const;
-    void setPropArrayValue(const SharedValue &value);
-    const SharedValue &getPropArrayValue();
 
     //Point
     PPoint getPointById(quintptr id_point) const;

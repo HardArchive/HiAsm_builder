@@ -28,6 +28,17 @@ Property::Property(const QJsonObject &object, QObject *parent)
     deserialize(object);
 }
 
+Property::Property(quintptr id, DataTypes type, const QVariant &data, const QString &name)
+{
+    m_id = id;
+    m_type = type;
+    m_name = name;
+    m_value.setId(id);
+    m_value.setType(type);
+    m_value.setValue(data);
+    m_value.setName(name);
+}
+
 void Property::collectingData()
 {
     m_name = QString::fromLocal8Bit(cgt::propGetName(m_id));
@@ -121,7 +132,7 @@ void Property::collectingData()
             default: break;
             }
 
-            arrayItems.append(SharedValue::create(0, arrItemType, data, name));
+            arrayItems.append(SharedValue::create(1, arrItemType, data, name));
         }
 
         setValue(id_value, m_type, QVariant::fromValue(arrayItems), QString(), arrItemType);

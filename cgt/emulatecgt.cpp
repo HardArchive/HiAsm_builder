@@ -13,7 +13,7 @@
 
 namespace EmulateCgt
 {
-#define EXPORT static __stdcall
+#define EXPORT __stdcall
 
     //ru Храним указатель на модель данных
     static SceneModel *m_model = nullptr;
@@ -122,8 +122,11 @@ namespace EmulateCgt
     //ru Возвращает водержимое поля Sub из конфигурационного INI-файла элемента.
     EXPORT const char *elGetInfSub(quintptr id_element)
     {
-        Q_UNUSED(id_element)
-        return 0;
+        const PElement e = m_model->getElementById(id_element);
+        if (!e)
+            return 0;
+
+        return fcgt::strToCString(e->getInfSub());
     }
 
     //ru Возвращает общее количество видимых точек у элемента.
@@ -346,14 +349,6 @@ namespace EmulateCgt
     //ru Возвращает значение свойства в формате uchar.
     EXPORT uchar propToByte(quintptr id_prop)
     {
-        if (id_prop == 1) {
-            const SharedValue v = m_model->getPropArrayValue();
-            if (!v)
-                return 0;
-
-            return v->toByte();
-        }
-
         PProperty p = m_model->getPropertyById(id_prop);
         if (!p)
             return 0;
@@ -364,14 +359,6 @@ namespace EmulateCgt
     //ru Возвращает значение свойства в формате int.
     EXPORT int propToInteger(quintptr id_prop)
     {
-        if (id_prop == 1) {
-            const SharedValue v = m_model->getPropArrayValue();
-            if (!v)
-                return 0;
-
-            return v->toInt();
-        }
-
         PProperty p = m_model->getPropertyById(id_prop);
         if (!p)
             return 0;
@@ -382,14 +369,6 @@ namespace EmulateCgt
     //ru Возвращает значение свойства в формате float.
     EXPORT qreal propToReal(quintptr id_prop)
     {
-        if (id_prop == 1) {
-            const SharedValue v = m_model->getPropArrayValue();
-            if (!v)
-                return 0;
-
-            return v->toReal();
-        }
-
         PProperty p = m_model->getPropertyById(id_prop);
         if (!p)
             return 0;
@@ -400,14 +379,6 @@ namespace EmulateCgt
     //ru Возвращает значение свойства в виде C строки.
     EXPORT const char *propToString(quintptr id_prop)
     {
-        if (id_prop == 1) {
-            const SharedValue v = m_model->getPropArrayValue();
-            if (!v)
-                return 0;
-
-            return fcgt::strToCString(v->toString());
-        }
-
         PProperty p = m_model->getPropertyById(id_prop);
         if (!p)
             return 0;
@@ -541,10 +512,16 @@ namespace EmulateCgt
             return 0;
 
         const SharedValue arrValue = v->getArrayItemByIndex(index);
-        if (arrValue)
-            m_model->setPropArrayValue(arrValue);
+        if (arrValue) {
+            delete m_model->getPropertyById(1);
 
-        return 1;
+            PProperty prop = new Property(1, arrValue->getType(), arrValue->getValue(), arrValue->getName());
+            m_model->addPropertyToMap(prop);
+
+            return 1;
+        }
+
+        return 0;
     }
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ среда ~~~~~~~~~~~~~~~~~~~~~~~~~~

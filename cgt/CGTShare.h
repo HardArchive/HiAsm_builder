@@ -9,7 +9,7 @@
 #include <QtCore>
 #include <QBitArray>
 
-//!!! ========== Поддерживается только HiAsm 4, пакет RTCG ==========
+//!!! ========== Поддерживается только HiAsm 4, пакет Windows ==========
 
 //!ru Флаги элемента
 enum ElementFlags {
@@ -332,9 +332,9 @@ typedef int(*t_buildPrepareProc)(void *params);
 typedef int(*t_buildProcessProc)(TBuildProcessRec &params);
 typedef int(*t_checkVersionProc)(const THiAsmVersion &params);
 
-extern t_buildPrepareProc buildPrepareProc;
-extern t_buildProcessProc buildProcessProc;
-extern t_checkVersionProc checkVersionProc;
+extern t_buildPrepareProc buildPrepareProcLib;
+extern t_buildProcessProc buildProcessProcLib;
+extern t_checkVersionProc checkVersionProcLib;
 
 struct TCodeGenTools {
 #define CALLBACK __stdcall

@@ -10,7 +10,7 @@
 namespace ProxyCgt
 {
     //Дефайны
-#define EXPORT static __stdcall
+#define EXPORT __stdcall
 #define PRINT_FUNC_INFO qInfo("  Call: %s", Q_FUNC_INFO);
 #define PRINT_RESULT(X) qInfo() << qUtf8Printable(QString("  Return: %1").arg(X));
 
@@ -30,7 +30,7 @@ namespace ProxyCgt
             ++numArg;
         }
     }
-    void printArgs(CgtParams index, const QVariant &value)
+    void printParamArgs(CgtParams index, const QVariant &value)
     {
         qInfo("  Arg1: %s", qUtf8Printable(CgtParamsMap[index]));
         if (value.type() == QVariant::String) {
@@ -110,7 +110,7 @@ namespace ProxyCgt
     {
         PRINT_FUNC_INFO
         quintptr res = m_cgt->elSetCodeName(id_element, name);
-        printArgs({id(id_element), name});
+        printArgs({id(id_element), str(name)});
         PRINT_RESULT(id(res))
 
         return res;
@@ -427,44 +427,47 @@ namespace ProxyCgt
     EXPORT int GetParam(CgtParams index, void *value)
     {
         PRINT_FUNC_INFO
+        if (index > 12)
+            index = PARAM_DEBUG_MODE;
+
         int res = m_cgt->GetParam(index, value);
 
         switch (index) {
         case PARAM_CODE_PATH :
-            printArgs(index, reinterpret_cast<const char *>(value));
+            printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         case PARAM_DEBUG_MODE:
-            printArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value));
             break;
         case PARAM_DEBUG_SERVER_PORT:
-            printArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value));
             break;
         case PARAM_DEBUG_CLIENT_PORT:
-            printArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value));
             break;
         case PARAM_PROJECT_PATH:
-            printArgs(index, reinterpret_cast<const char *>(value));
+            printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         case PARAM_HIASM_VERSION:
-            printArgs(index, reinterpret_cast<const char *>(value));
+            printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         case PARAM_USER_NAME:
-            printArgs(index, reinterpret_cast<const char *>(value));
+            printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         case PARAM_USER_MAIL:
-            printArgs(index, reinterpret_cast<const char *>(value));
+            printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         case PARAM_PROJECT_NAME:
-            printArgs(index, reinterpret_cast<const char *>(value));
+            printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         case PARAM_SDE_WIDTH:
-            printArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value));
             break;
         case PARAM_SDE_HEIGHT:
-            printArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value));
             break;
         case PARAM_COMPILER:
-            printArgs(index, reinterpret_cast<const char *>(value));
+            printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         }
 
@@ -770,7 +773,7 @@ namespace ProxyCgt
     {
         PRINT_FUNC_INFO
         quintptr res = m_cgt->sdkGetParent(id_sdk);
-        printArgs({id(id(id_sdk))});
+        printArgs({id(id_sdk)});
         PRINT_RESULT(id(res))
 
         return res;

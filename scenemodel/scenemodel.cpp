@@ -22,8 +22,7 @@ SceneModel::SceneModel(QObject *parent):
 
 SceneModel::~SceneModel()
 {
-    compileResources();
-    deleteResources();
+
 }
 
 void SceneModel::collectingData(quintptr id_sdk)
@@ -91,17 +90,17 @@ void SceneModel::collectingData(quintptr id_sdk)
 QJsonDocument SceneModel::serialize()
 {
     QVariantMap cgtParams;
-    //cgtParams.insert("CODE_PATH", m_codePath);
+    cgtParams.insert("CODE_PATH", m_codePath);
     cgtParams.insert("DEBUG_MODE", m_debugMode);
     cgtParams.insert("DEBUG_SERVER_PORT", m_debugServerPort);
     cgtParams.insert("DEBUG_CLIENT_PORT", m_debugClientPort);
-    //cgtParams.insert("PROJECT_PATH", m_projectPath);
-    //cgtParams.insert("HIASM_VERSION", m_hiasmVersion);
-    //cgtParams.insert("USER_NAME", m_userName);
-    //cgtParams.insert("USER_MAIL", m_userMail);
+    cgtParams.insert("PROJECT_PATH", m_projectPath);
+    cgtParams.insert("HIASM_VERSION", m_hiasmVersion);
+    cgtParams.insert("USER_NAME", m_userName);
+    cgtParams.insert("USER_MAIL", m_userMail);
     cgtParams.insert("PROJECT_NAME", m_projectName);
-    //cgtParams.insert("SDE_WIDTH", m_sdeWidth);
-    //cgtParams.insert("SDE_HEIGHT", m_sdeHeight);
+    cgtParams.insert("SDE_WIDTH", m_sdeWidth);
+    cgtParams.insert("SDE_HEIGHT", m_sdeHeight);
     cgtParams.insert("COMPILER", m_compiler);
 
     QVariantMap model;
@@ -116,17 +115,17 @@ void SceneModel::deserialize(const QJsonDocument &doc)
     const QJsonObject model = doc.object();
 
     const QJsonObject cgtParams = model["CGTParams"].toObject();
-    //m_codePath = cgtParams["CODE_PATH"].toString();
+    m_codePath = cgtParams["CODE_PATH"].toString();
     m_debugMode = cgtParams["DEBUG_MODE"].toInt();
     m_debugServerPort = cgtParams["DEBUG_SERVER_PORT"].toInt();
     m_debugClientPort = cgtParams["DEBUG_CLIENT_PORT"].toInt();;
-    //m_projectPath = cgtParams["PROJECT_PATH"].toString();
-    //m_hiasmVersion= cgtParams["HIASM_VERSION"].toString();
-    //m_userName = cgtParams["USER_NAME"].toString();
-    //m_userMail = cgtParams["USER_MAIL"].toString();
+    m_projectPath = cgtParams["PROJECT_PATH"].toString();
+    m_hiasmVersion = cgtParams["HIASM_VERSION"].toString();
+    m_userName = cgtParams["USER_NAME"].toString();
+    m_userMail = cgtParams["USER_MAIL"].toString();
     m_projectName = cgtParams["PROJECT_NAME"].toString();
-    //m_sdeWidth = cgtParams["SDE_WIDTH"].toInt();
-    //m_sdeHeight = cgtParams["SDE_HEIGHT"].toInt();
+    m_sdeWidth = cgtParams["SDE_WIDTH"].toInt();
+    m_sdeHeight = cgtParams["SDE_HEIGHT"].toInt();
     m_compiler = cgtParams["COMPILER"].toString();
 
     QJsonObject container = model["Container"].toObject();
@@ -247,16 +246,6 @@ PProperty SceneModel::getPropertyById(quintptr id_prop) const
     return m_mapProperties[id_prop];
 }
 
-void SceneModel::setPropArrayValue(const SharedValue &value)
-{
-    m_propArrayValue = value;
-}
-
-const SharedValue &SceneModel::getPropArrayValue()
-{
-    return m_propArrayValue;
-}
-
 PPoint SceneModel::getPointById(quintptr id_point) const
 {
     return m_mapPoints[id_point];
@@ -273,21 +262,47 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
     if (!p)
         return nullptr;
 
+    static const QString nameDir = "compiler";
+    static const QString ext = ".dat";
+    QString nameTypeRes;
+    QString fileName;
     const PValue v = p->getValue();
-    if (p->getType() == data_icon)
+    switch (p->getType()) {
+    case data_icon: {
         if (v->getValue().isNull())
             return fcgt::strToCString(QString("ASMA"));
 
-    const QByteArray byteArray = v->getValue().toByteArray();
-    static const QString nameDir = "compiler";
-    static const QString name = "STREAM";
-    static const QString ext = ".dat";
-    QString suffix = QString::number(m_resourcesForCompile.size());
-    QString fileName = name + suffix;
+        nameTypeRes = "ICON";
+        fileName = "ICON";
+        break;
+    }
+    case data_stream: {
+        nameTypeRes = "100";
+        fileName = "STREAM";
+        break;
+    }
+    case data_bitmap: {
+        if (v->getValue().isNull())
+            return nullptr;
 
+        nameTypeRes = "BITMAP";
+        fileName = "BITMAP";
+        break;
+    }
+    case data_jpeg:
+    case data_wave: {
+    }
+    default:
+        return nullptr;
+    }
+
+    const QByteArray byteArray = v->getValue().toByteArray();
+    QString suffix = QString::number(m_resourcesForCompile.size());
+    QString resFileName = fileName + suffix;
+    QString resFullFileName = fileName + suffix + ext;
     QString resFilePath = QDir::toNativeSeparators(
                               QDir::currentPath() + QDir::separator() +
-                              nameDir + QDir::separator() + fileName + ext
+                              nameDir + QDir::separator() + resFullFileName
                           );
     QFile file(resFilePath);
     if (!file.open(QIODevice::WriteOnly))
@@ -296,9 +311,9 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
     file.write(byteArray);
     file.close();
     m_resourcesToDelete.insert(resFilePath);
-    m_resourcesForCompile.insert(fileName, "100");
+    m_resourcesForCompile.insert(resFullFileName, nameTypeRes);
 
-    return fcgt::strToCString(fileName);
+    return fcgt::strToCString(resFileName);
 }
 
 const char *SceneModel::addStringRes(const QString &str)

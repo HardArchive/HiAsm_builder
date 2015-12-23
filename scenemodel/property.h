@@ -35,6 +35,10 @@ private:
 public:
     explicit Property(quintptr id_prop, QObject *parent);
     explicit Property(const QJsonObject &object, QObject *parent);
+    explicit Property(quintptr id = 0,
+                      DataTypes type = data_null,
+                      const QVariant &data = QVariant(),
+                      const QString &name = QString());
 
 private:
     void collectingData();
