@@ -70,11 +70,11 @@ int main(int argc, char *argv[])
 
     initLogger();
 
-    const QString packagePath = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "Elements/CNET/");
+    const QString packagePath = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "Elements/delphi/");
     const QString codePath = QDir::toNativeSeparators(packagePath + "code/");
     const QString makePath = QDir::toNativeSeparators(packagePath + "make/");
     const QString codeGenFile = "CodeGen.dll";
-    const QString makeExe = "make_CNET.dll";
+    const QString makeExe = "make_exe.dll";
     const QString fullPathCodeGen = packagePath + codeGenFile;
     const QString fullPathMakeExe = makePath + makeExe;
 
@@ -106,9 +106,9 @@ int main(int argc, char *argv[])
     qInfo("%s library successfully loaded.", qPrintable(codeGenFile));
 
     //ru Определение функций кодогенератора
-    buildPrepareProc = reinterpret_cast<t_buildPrepareProc>(libCodeGen.resolve("buildPrepareProc"));
-    buildProcessProc = reinterpret_cast<t_buildProcessProc>(libCodeGen.resolve("buildProcessProc"));
-    checkVersionProc = reinterpret_cast<t_checkVersionProc>(libCodeGen.resolve("CheckVersionProc"));
+    buildPrepareProcLib = reinterpret_cast<t_buildPrepareProc>(libCodeGen.resolve("buildPrepareProc"));
+    buildProcessProcLib = reinterpret_cast<t_buildProcessProc>(libCodeGen.resolve("buildProcessProc"));
+    checkVersionProcLib = reinterpret_cast<t_checkVersionProc>(libCodeGen.resolve("CheckVersionProc"));
 
     const QString modelFilePath = "test.json";
     qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
@@ -117,6 +117,7 @@ int main(int argc, char *argv[])
         qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
         exit(0);
     }
+    QString fullPathProjectFile = codePath + QDir::separator() +  model.getProjectName() + ".dpr";
 
     qInfo("Set params for Model.");
     model.setProjectPath(QDir::currentPath());
@@ -127,7 +128,7 @@ int main(int argc, char *argv[])
 
     qInfo("Call func buildProcessProc from CodeGen.dll...");
     TBuildProcessRec rec(EmulateCgt::getCgt(), model.getIdRootContainer());
-    buildProcessProc(rec);
+    buildProcessProcLib(rec);
 
     qInfo("Compile resources.");
     model.compileResources();
@@ -138,12 +139,12 @@ int main(int argc, char *argv[])
 
     TBuildMakePrjRec buildMakePrjRec;
     buildMakePrjRec.compiler = fcgt::strToCString(model.getCompiler());
-    buildMakePrjRec.prjFilename = fcgt::strToCString(codePath + model.getProjectName() + ".csproj");
+    buildMakePrjRec.prjFilename = fcgt::strToCString(fullPathProjectFile);
     buildMakePrjRec.result = rec.result;
 
     TBuildCompliteRec buildCompliteRec;
-    buildCompliteRec.appFilename = fcgt::strToCString(QDir::currentPath() + model.getProjectName() + ".exe");
-    buildCompliteRec.prjFilename = fcgt::strToCString(codePath + model.getProjectName() + ".csproj");
+    buildCompliteRec.appFilename = fcgt::strToCString(QDir::currentPath() + QDir::separator() + model.getProjectName() + ".exe");
+    buildCompliteRec.prjFilename = fcgt::strToCString(fullPathProjectFile);
 
     buildGetParamsProc(buildParams);
     buildMakePrj(buildMakePrjRec);
@@ -153,11 +154,12 @@ int main(int argc, char *argv[])
     libCodeGen.unload();
 
     qInfo("Build project.");
-    QString storeCurrentPath = QDir::currentPath();
-    QDir::setCurrent(codePath);
-    QString executeCompiler = QString("C:/Windows/Microsoft.NET/Framework/v4.0.30319/msbuild.exe \"%1\" /v:m").arg(model.getProjectName() + ".csproj");
-    QProcess::execute(executeCompiler);
-    QDir::setCurrent(storeCurrentPath);
+    QString tmpCurrentPath = QDir::currentPath();
+    QDir::setCurrent("compiler/delphi/");
+    QString pathCompiler = "compiler/delphi/dcc32.exe";
+    QString args = QString(" \"%1\" \"-U%2.\" -Q").arg(fullPathProjectFile).arg(QDir::currentPath());
+    QProcess::execute(pathCompiler + args);
+    QDir::setCurrent(tmpCurrentPath);
 
     return a.exec();
 }

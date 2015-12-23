@@ -263,9 +263,9 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
         return nullptr;
 
     static const QString nameDir = "compiler";
-    static const QString ext = ".dat";
     QString nameTypeRes;
     QString fileName;
+    QString ext;
     const PValue v = p->getValue();
     switch (p->getType()) {
     case data_icon: {
@@ -274,11 +274,13 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
 
         nameTypeRes = "ICON";
         fileName = "ICON";
+        ext = ".ico";
         break;
     }
     case data_stream: {
         nameTypeRes = "100";
         fileName = "STREAM";
+        ext = ".dat";
         break;
     }
     case data_bitmap: {
@@ -287,6 +289,7 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
 
         nameTypeRes = "BITMAP";
         fileName = "BITMAP";
+        ext = ".bmp";
         break;
     }
     case data_jpeg:
@@ -362,8 +365,10 @@ void SceneModel::compileResources()
     file.open(QIODevice::WriteOnly);
     QTextStream write(&file);
 
-    for (const auto &nameRes : m_resourcesForCompile.keys()) {
-        write << QString("%1 %2 %1.dat\r\n").arg(nameRes).arg(m_resourcesForCompile[nameRes]);
+    for (const auto &fullFileNameRes : m_resourcesForCompile.keys()) {
+        QFileInfo file(fullFileNameRes);
+
+        write << QString("%1 %2 %3\r\n").arg(file.baseName()).arg(m_resourcesForCompile[fullFileNameRes]).arg(fullFileNameRes);
     }
 
     write << "ASMA ICON \"..\\int\\main.ico\"";
