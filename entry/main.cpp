@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
         qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
         exit(0);
     }
-    QString fullPathProjectFile = codePath + QDir::separator() +  model.getProjectName() + ".dpr";
+    QString fullPathProjectFile = codePath +  model.getProjectName() + ".dpr";
 
     qInfo("Set params for model.");
     model.setProjectPath(QDir::currentPath());
@@ -79,7 +79,11 @@ int main(int argc, char *argv[])
 
     qInfo("Call func buildProcessProc from CodeGen.dll...");
     TBuildProcessRec rec(EmulateCgt::getCgt(), model.getIdRootContainer());
-    buildProcessProcLib(rec);
+    CgResult resultBuild = buildProcessProcLib(rec);
+    if (resultBuild != CG_SUCCESS) {
+        qCritical() << "Error build project: buildProcessProc return" << CgResultMap[resultBuild];
+        exit(0);
+    }
 
     qInfo("Compile resources.");
     model.compileResources();
@@ -94,9 +98,10 @@ int main(int argc, char *argv[])
     buildCompliteRec.appFilename = fcgt::strToCString(QDir::currentPath() + QDir::separator() + model.getProjectName() + ".exe");
     buildCompliteRec.prjFilename = fcgt::strToCString(fullPathProjectFile);
 
-    qInfo("Build project.");
     buildMakePrj(buildMakePrjRec);
+    model.addResList(fullPathProjectFile);
 
+    qInfo("Compile project.");
     QString tmpCurrentPath = QDir::currentPath();
     QDir::setCurrent("compiler/delphi/");
     QString pathCompiler = "compiler/delphi/dcc32.exe";

@@ -360,9 +360,8 @@ void SceneModel::compileResources()
 
     const QString currentPath = QDir::currentPath();
     const QString resourcesPath = currentPath + QDir::separator() + m_resourcesDir;
-    const QString rcFilePath = currentPath + QDir::separator() + NAME_FILE_RC;
-    const QString resFilePathFromResDir = resourcesPath + QDir::separator() + NAME_FILE_RES;
-    const QString resFilePathFromCodeDir = m_codePath + QDir::separator() + NAME_FILE_RES;
+    const QString rcFilePath = resourcesPath + QDir::separator() + NAME_FILE_RC;
+    const QString resFilePath = m_codePath + QDir::separator() + NAME_FILE_RES;
 
     QDir::setCurrent(resourcesPath);
     QFile file(NAME_FILE_RC);
@@ -378,13 +377,11 @@ void SceneModel::compileResources()
     write << "ASMA ICON main.ico";
     file.close();
 
-    QProcess::execute(QString("%1 /r %2").arg(NAME_FILE_GORC).arg(NAME_FILE_RC));
-    QFile::copy(NAME_FILE_RES, resFilePathFromCodeDir);
+    QProcess::execute(QString("%1 /nw /fo \"%2\" %3").arg(NAME_FILE_GORC).arg(resFilePath).arg(NAME_FILE_RC));
     QDir::setCurrent(currentPath);
 
     addResList(rcFilePath);
-    addResList(resFilePathFromResDir);
-    addResList(resFilePathFromCodeDir);
+    addResList(resFilePath);
 }
 
 

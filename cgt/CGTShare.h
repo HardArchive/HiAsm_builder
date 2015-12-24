@@ -293,11 +293,11 @@ struct TBuildRunRec {
     void *data;
 };
 
-typedef int(*t_buildCompliteProc)(const TBuildCompliteRec &params);
-typedef int(*t_buildGetParamsProc)(TBuildParams &params);
-typedef int(*t_buildMakePrj)(const TBuildMakePrjRec &params);
-typedef int(*t_buildRunProc)(TBuildRunRec &params);
-typedef int(*t_buildStopProc)(TBuildRunRec &params);
+typedef CgResult(*t_buildCompliteProc)(const TBuildCompliteRec &params);
+typedef CgResult(*t_buildGetParamsProc)(TBuildParams &params);
+typedef CgResult(*t_buildMakePrj)(const TBuildMakePrjRec &params);
+typedef CgResult(*t_buildRunProc)(TBuildRunRec &params);
+typedef CgResult(*t_buildStopProc)(TBuildRunRec &params);
 
 extern t_buildGetParamsProc buildGetParamsProc;
 extern t_buildMakePrj buildMakePrj;
@@ -327,9 +327,9 @@ struct TBuildProcessRec {
     explicit TBuildProcessRec(PCodeGenTools _cgt, quintptr _sdk) : cgt(_cgt), sdk(_sdk) {}
 };
 
-typedef int(*t_buildPrepareProc)(void *params);
-typedef int(*t_buildProcessProc)(TBuildProcessRec &params);
-typedef int(*t_checkVersionProc)(const THiAsmVersion &params);
+typedef CgResult(*t_buildPrepareProc)(void *params);
+typedef CgResult(*t_buildProcessProc)(TBuildProcessRec &params);
+typedef CgResult(*t_checkVersionProc)(const THiAsmVersion &params);
 
 extern t_buildPrepareProc buildPrepareProcLib;
 extern t_buildProcessProc buildProcessProcLib;
