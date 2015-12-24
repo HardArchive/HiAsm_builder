@@ -3,7 +3,6 @@
 //Project
 
 //STL
-#include <functional>
 
 //Qt
 #include <QtCore>

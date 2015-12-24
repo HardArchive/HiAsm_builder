@@ -28,6 +28,7 @@ private:
     PContainer m_container{};
 
     //Resource
+    const QString m_resourcesDir = "resources";
     QSet<QString> m_resourcesToDelete;
     QMap<QString, QString> m_resourcesForCompile;
 

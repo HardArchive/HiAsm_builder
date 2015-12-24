@@ -27,14 +27,13 @@ DEFINES += APP_COMPANY=\"\\\"$$QMAKE_TARGET_COMPANY\\\"\" \
            APP_PRODUCT=\"\\\"$$QMAKE_TARGET_PRODUCT\\\"\" \
            APP_VERSION=\"\\\"$$VERSION\\\"\"
 
-#Параметры логгера
-DEFINES += ELPP_QT_LOGGING \
-           ELPP_STL_LOGGING \
-           ELPP_STRICT_SIZE_CHECK \
-           ELPP_THREAD_SAFE \
-           ELPP_MULTI_LOGGER_SUPPORT \
-           ELPP_NO_DEFAULT_LOG_FILE
+SOURCES += $$files("cgt/*.cpp", true)
+SOURCES += $$files("scenemodel/*.cpp", true)
+SOURCES += $$files("entry/*.cpp", true)
 
-SOURCES += $$files("*.cpp", true)
+HEADERS += $$files("cgt/*.h", true)
+HEADERS += $$files("scenemodel/*.h", true)
+HEADERS += $$files("entry/*.h", true)
 
-HEADERS += $$files("*.h", true)
+#Подключаем логгер
+include(logger/logger.pri)
