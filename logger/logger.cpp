@@ -5,12 +5,19 @@
 
 //Qt
 #include <QtCore>
+#include <QDateTime>
+#include <QDir>
 
 namespace logger
 {
+    static QDir dir;
+    static QString format = "yyyy-mm-dd_hh_mm_ss_zzz";
+    static QFile file(QString("logs/%1.log").arg(QDateTime::currentDateTime().toString(format)));
+
     void handler(QtMsgType type, const QMessageLogContext &context, const QString &msg)
     {
         Q_UNUSED(context)
+
         QTextStream cout(stdout);
         QTextStream cerr(stderr);
 
@@ -23,6 +30,9 @@ namespace logger
         cerr.setCodec("System");
 #endif
 #endif
+
+        dir.mkdir("logs");
+        file.write(QString("%1\r\n").arg(msg).toUtf8());
 
         switch (type) {
         case QtDebugMsg:
@@ -50,6 +60,8 @@ namespace logger
 
     void initialize()
     {
+        dir.mkdir("logs");
+        file.open(QIODevice::Append);
         qInstallMessageHandler(handler);
     }
 
