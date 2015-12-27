@@ -270,7 +270,6 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
     if (!p)
         return nullptr;
 
-    static const QString nameDir = "resources";
     QString nameTypeRes;
     QString fileName;
     QString ext;
@@ -278,7 +277,7 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
     switch (p->getType()) {
     case data_icon: {
         if (v->getValue().isNull())
-            return fcgt::strToCString(QString("ASMA"));
+            return fcgt::strToCString("ASMA");
 
         nameTypeRes = "ICON";
         fileName = "ICON";
@@ -307,24 +306,25 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
         return nullptr;
     }
 
-    const QByteArray byteArray = v->getValue().toByteArray();
-    QString suffix = QString::number(m_resourcesForCompile.size());
-    QString resFileName = fileName + suffix;
-    QString resFullFileName = fileName + suffix + ext;
-    QString resFilePath = QDir::toNativeSeparators(
-                              QDir::currentPath() + QDir::separator() +
-                              nameDir + QDir::separator() + resFullFileName
-                          );
-    QFile file(resFilePath);
+    static const QString SEP = QDir::separator();
+    static const QString CURRENT_PATH = QDir::currentPath();
+
+    const QByteArray resData = v->getValue().toByteArray();
+    const QString suffix = QString::number(m_resourcesForCompile.size());
+    const QString fileNameRes = fileName + suffix;
+    const QString fullFileNameRes = fileName + suffix + ext;
+    const QString filePathRes = CURRENT_PATH + SEP + m_resourcesDir + SEP + fullFileNameRes;
+
+    QFile file(filePathRes);
     if (!file.open(QIODevice::WriteOnly))
         return nullptr;
 
-    file.write(byteArray);
+    file.write(resData);
     file.close();
-    m_resourcesToDelete.insert(resFilePath);
-    m_resourcesForCompile.insert(resFullFileName, nameTypeRes);
+    m_resourcesToDelete.insert(filePathRes);
+    m_resourcesForCompile.insert(fullFileNameRes, nameTypeRes);
 
-    return fcgt::strToCString(resFileName);
+    return fcgt::strToCString(fileNameRes);
 }
 
 const char *SceneModel::addStringRes(const QString &str)
@@ -361,33 +361,35 @@ void SceneModel::deleteResources()
 
 void SceneModel::compileResources()
 {
-    static const QString NAME_DIR_OUTPUT_RESOURCES = "resources";
     static const QString NAME_FILE_RC = "allres.rc";
     static const QString NAME_FILE_RES = "allres.res";
     static const QString NAME_FILE_GORC = "GoRC.exe";
-    QString current = QDir::currentPath();
-    QString outputResPath = current + QDir::separator() + NAME_DIR_OUTPUT_RESOURCES;
-    QDir::setCurrent(outputResPath);
 
+    const QString currentPath = QDir::currentPath();
+    const QString resourcesPath = currentPath + QDir::separator() + m_resourcesDir;
+    const QString rcFilePath = resourcesPath + QDir::separator() + NAME_FILE_RC;
+    const QString resFilePath = m_codePath + QDir::separator() + NAME_FILE_RES;
+
+    QDir::setCurrent(resourcesPath);
     QFile file(NAME_FILE_RC);
     file.open(QIODevice::WriteOnly);
     QTextStream write(&file);
 
-    for (const auto &fullFileNameRes : m_resourcesForCompile.keys()) {
-        QFileInfo file(fullFileNameRes);
+    for (const auto &filePath : m_resourcesForCompile.keys()) {
+        QFileInfo file(filePath);
 
-        write << QString("%1 %2 %3\r\n").arg(file.baseName()).arg(m_resourcesForCompile[fullFileNameRes]).arg(fullFileNameRes);
+        write << QString("%1 %2 %3\r\n").arg(file.baseName()).arg(m_resourcesForCompile[filePath]).arg(filePath);
     }
 
     write << "ASMA ICON main.ico";
     file.close();
 
-    QProcess::execute(QString("%1 /r %2").arg(NAME_FILE_GORC).arg(NAME_FILE_RC));
-    QFile::copy(NAME_FILE_RES, m_codePath + QDir::separator() + NAME_FILE_RES);
+    QProcess::execute(QString("%1 /nw /fo \"%2\" %3").arg(NAME_FILE_GORC).arg(resFilePath).arg(NAME_FILE_RC));
+    QDir::setCurrent(currentPath);
 
-    QDir::setCurrent(current);
+    addResList(rcFilePath);
+    addResList(resFilePath);
 }
-
 
 int SceneModel::addResList(const QString &filePath)
 {
