@@ -1,4 +1,4 @@
-//Project
+﻿//Project
 #include "value.h"
 #include "cgt/CGTShare.h"
 
@@ -93,7 +93,7 @@ QVariantMap Value::serialize()
 
 void Value::deserialize(const QJsonObject &object)
 {
-    m_id = object["id"].toVariant().toUInt();
+    m_id = object["id"].toVariant().value<quintptr>();
     m_type = DataType(object["type"].toInt());
     m_name = object["name"].toString();
     m_subType = DataType(object["subType"].toInt());
@@ -269,7 +269,7 @@ DataType Value::getDataType() const
     return m_subType;
 }
 
-size_t Value::getArraySize() const
+int Value::getArraySize() const
 {
     if (!m_value.canConvert<Values>())
         return 0;

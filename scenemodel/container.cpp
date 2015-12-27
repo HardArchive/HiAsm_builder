@@ -1,4 +1,4 @@
-//Project
+﻿//Project
 #include "container.h"
 #include "element.h"
 #include "scenemodel.h"
@@ -58,7 +58,7 @@ QVariantMap Container::serialize()
 void Container::deserialize(const QJsonObject &object)
 {
     const auto data = object["Data"].toObject();
-    m_id = data["id"].toVariant().toUInt();
+    m_id = data["id"].toVariant().value<quintptr>();
     m_model->addContainerToMap(this);
     m_name = data["name"].toString();
 
@@ -98,7 +98,7 @@ void Container::setName(const QString &name)
     m_name = name;
 }
 
-size_t Container::getCountElements() const
+int Container::getCountElements() const
 {
     return m_elements.size();
 }

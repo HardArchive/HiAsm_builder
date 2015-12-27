@@ -17,18 +17,24 @@ Package::Package(const QString &packagePath, QObject *parent = 0)
     //!!! Назначение путей !!!
 
     //Задаём путь к файлу информации о пакете
-    m_packageFileInfo = m_packagePath + QDir::separator() + PackageInfo::FILE_NAME_INFO;
+    m_packageFileInfo = m_packagePath + QDir::separator() + PackageInfo::INFO_FILE_NAME;
     
     //Задаём путь к папке с элементами
-    m_confPath = m_packagePath + QDir::separator() + PackageInfo::DIR_CONF;
+    m_confPath = m_packagePath + QDir::separator() + PackageInfo::CONF_DIR;
 
     //!!! Загружаем информацию о пакете/элементах !!!
     
     //Если не удалось по каким либо причинам прочитать информацию о пакете
-    loadPackageInfo();
+    if (!loadPackageInfo()) {
+        setSuccess(false);
+        return;
+    }
     
     //Если не удалось найти и загрузить информацию об элементах
-    loadElements();
+    if (!loadElements()) {
+        setSuccess(false);
+        return;
+    }
 
     setSuccess(true);
 }

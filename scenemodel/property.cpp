@@ -185,7 +185,7 @@ QVariantMap Property::serialize()
 
 void Property::deserialize(const QJsonObject &object)
 {
-    m_id = object["id"].toVariant().toUInt();
+    m_id = object["id"].toVariant().value<quintptr>();
     m_model->addPropertyToMap(this);
 
     m_name = object["name"].toString();

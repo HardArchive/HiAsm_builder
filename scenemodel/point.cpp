@@ -1,4 +1,4 @@
-//Project
+﻿//Project
 #include "point.h"
 #include "container.h"
 #include "element.h"
@@ -58,7 +58,7 @@ QVariantMap Point::serialize()
 
 void Point::deserialize(const QJsonObject &object)
 {
-    m_id = object["id"].toVariant().toUInt();
+    m_id = object["id"].toVariant().value<quintptr>();
     m_model->addPointToMap(this);
 
     m_type = PointType(object["type"].toInt());
@@ -67,8 +67,8 @@ void Point::deserialize(const QJsonObject &object)
     m_name = object["name"].toString();
     m_dpeName = object["dpeName"].toString();
     m_info = object["info"].toString();
-    m_linkPoint = object["linkPoint"].toVariant().toUInt();
-    m_RLinkPoint = object["RLinkPoint"].toVariant().toUInt();
+    m_linkPoint = object["linkPoint"].toVariant().value<quintptr>();
+    m_RLinkPoint = object["RLinkPoint"].toVariant().value<quintptr>();
 }
 
 quintptr Point::getId() const

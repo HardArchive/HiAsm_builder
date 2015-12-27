@@ -1,4 +1,4 @@
-//Project
+﻿//Project
 #include "scenemodel.h"
 #include "container.h"
 #include "element.h"
@@ -36,7 +36,7 @@ void SceneModel::collectingData(quintptr id_sdk)
     QByteArray buf("", 512);
 
     buf.fill('\0');
-    reinterpret_cast<quintptr *>(buf.data())[0] = id_element;
+    reinterpret_cast<quintptr *>(buf.data())[0] = id_element; //-V206
     m_cgt->GetParam(PARAM_CODE_PATH, buf.data());
     m_codePath = QString::fromLocal8Bit(buf);
 
@@ -50,7 +50,7 @@ void SceneModel::collectingData(quintptr id_sdk)
     m_debugClientPort = iBuf;
 
     buf.fill('\0');
-    reinterpret_cast<quintptr *>(buf.data())[0] = id_element;
+    reinterpret_cast<quintptr *>(buf.data())[0] = id_element; //-V206
     m_cgt->GetParam(PARAM_PROJECT_PATH, buf.data());
     m_projectPath = QString::fromLocal8Bit(buf);
 
@@ -70,7 +70,7 @@ void SceneModel::collectingData(quintptr id_sdk)
     m_userMail = QString::fromLocal8Bit(buf);
 
     buf.fill('\0');
-    reinterpret_cast<quintptr *>(buf.data())[0] = id_element;
+    reinterpret_cast<quintptr *>(buf.data())[0] = id_element; //-V206
     m_cgt->GetParam(PARAM_PROJECT_NAME, buf.data());
     m_projectName = QString::fromLocal8Bit(buf);
 
@@ -83,7 +83,7 @@ void SceneModel::collectingData(quintptr id_sdk)
     m_sdeHeight = tmpH[0];
 
     buf.fill('\0');
-    reinterpret_cast<quintptr *>(buf.data())[0] = id_element;
+    reinterpret_cast<quintptr *>(buf.data())[0] = id_element; //-V206
     m_cgt->GetParam(PARAM_COMPILER, buf.data());
     m_compiler = QString::fromLocal8Bit(buf);
 }
@@ -211,7 +211,7 @@ PContainer SceneModel::getContainerById(quintptr id_sdk) const
     return m_mapContainers[id_sdk];
 }
 
-size_t SceneModel::getCountElementsInContainer(quintptr id_sdk) const
+int SceneModel::getCountElementsInContainer(quintptr id_sdk) const
 {
     const PContainer c = getContainerById(id_sdk);
     if (!c)
@@ -406,7 +406,7 @@ void SceneModel::getCgtParam(CgtParams index, void *buf) const
         strcpy(reinterpret_cast<char *>(buf), str.toStdString().c_str());
     };
     auto writeInt = [buf](int value) {
-        *reinterpret_cast<int *>(buf) = value;
+        *reinterpret_cast<int *>(buf) = value; //-V206
     };
 
     switch (index) {

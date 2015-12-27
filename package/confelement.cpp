@@ -74,9 +74,9 @@ void ConfElement::LoadConf()
             secPoints << line;
             break;
         default: {
-            qWarning(qUtf8Printable("При загрузке конфигурации элемента, найден неизвестный параметр."));
-            qWarning("Файл: \"%s\"", qUtf8Printable(m_pathConf));
-            qWarning("Параметр: \"%s\"", qUtf8Printable(line));
+            //qWarning(qUtf8Printable("При загрузке конфигурации элемента, найден неизвестный параметр."));
+            //qWarning("Файл: \"%s\"", qUtf8Printable(m_pathConf));
+            //qWarning("Параметр: \"%s\"", qUtf8Printable(line));
             break;
         }
         }

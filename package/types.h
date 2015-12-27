@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 //Project
 #include "cgt/CGTShare.h"
@@ -21,7 +21,7 @@ struct ConfPoint {
 typedef QSharedPointer<ConfPoint> SharedConfPoint;
 typedef QList<SharedConfPoint> ListConfPoints;
 
-struct ConfProp {
+struct ConfProp { //-V802
     QString name;
     QString desc;
     QString value;
@@ -58,3 +58,4 @@ typedef QList<SharedCompilerInfo> ListCompilers;
 
 class Package;
 typedef Package *PPackage;
+typedef QVector<PPackage> Packages;

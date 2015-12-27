@@ -83,7 +83,7 @@ public:
 
     //Container
     PContainer getContainerById(quintptr id_sdk) const;
-    size_t getCountElementsInContainer(quintptr id_sdk) const;
+    int getCountElementsInContainer(quintptr id_sdk) const;
     quintptr getIdRootContainer() const;
 
     //Element

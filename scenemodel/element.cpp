@@ -1,4 +1,4 @@
-//Project
+﻿//Project
 #include "element.h"
 #include "container.h"
 #include "point.h"
@@ -137,7 +137,7 @@ void Element::deserialize(const QJsonObject &object)
     const auto properties = object["Properties"].toArray();
     const auto points = object["Points"].toArray();
 
-    m_id = data["id"].toVariant().toUInt();
+    m_id = data["id"].toVariant().value<quintptr>();
     m_model->addElementToMap(this);
 
     //m_userData = data["userData"].toVariant().toUInt();
@@ -145,7 +145,7 @@ void Element::deserialize(const QJsonObject &object)
     m_flags = ElementFlgs(data["flags"].toInt());
     m_group = data["group"].toInt();
     m_linkIs = data["linkIs"].toBool();
-    m_linkMain = data["linkMain"].toVariant().toUInt();
+    m_linkMain = data["linkMain"].toVariant().value<quintptr>();
     m_posX = data["posX"].toInt();
     m_posY = data["posY"].toInt();
     m_sizeW = data["sizeW"].toInt();
@@ -337,7 +337,7 @@ PSceneModel Element::getModel()
     return m_model;
 }
 
-size_t Element::getCountContainers() const
+int Element::getCountContainers() const
 {
     return m_containers.size();
 }
@@ -387,7 +387,7 @@ void Element::removeContainer(uint index)
     m_containers.remove(index);
 }
 
-size_t Element::getCountPoints() const
+int Element::getCountPoints() const
 {
     return m_points.size();
 }
@@ -440,7 +440,7 @@ void Element::removePoint(uint index)
     m_points.remove(index);
 }
 
-size_t Element::getCountProps() const
+int Element::getCountProps() const
 {
     return m_properties.size();
 }

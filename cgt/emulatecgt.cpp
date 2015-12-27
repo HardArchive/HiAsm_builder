@@ -22,7 +22,7 @@ namespace EmulateCgt
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ контейнер ~~~~~~~~~~~~~~~~~~~~~~~~~~
     //ru Возвращает количество элементов в контейнере.
-    EXPORT uint sdkGetCount(quintptr id_sdk)
+    EXPORT int sdkGetCount(quintptr id_sdk)
     {
         return m_model->getCountElementsInContainer(id_sdk);
     }

@@ -10,13 +10,15 @@
 //Qt
 #include <QtCore>
 
+namespace PackageManagerInfo
+{
+    static const QString PACKAGES_DIR = "packages";
+}
+
 class PackageManager : public QObject
 {
-public:
-    const QString DIR_PACKAGES = "packages";
-    typedef QVector<PPackage> Packages;
-
     Q_OBJECT
+
 private:
     Packages m_packages;
     bool m_sucess = true;

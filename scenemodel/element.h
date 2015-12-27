@@ -121,7 +121,7 @@ public:
     PSceneModel getModel();
 
     //Container
-    size_t getCountContainers() const;
+    int getCountContainers() const;
     PContainer getContainer() const;
     quintptr getIdContainer() const;
     PContainer getContainerByIndex(uint index);
@@ -130,7 +130,7 @@ public:
     void removeContainer(uint index);
 
     //Point
-    size_t getCountPoints() const;
+    int getCountPoints() const;
     PPoint getPointByIndex(uint index) const;
     quintptr getIdPointByIndex(uint index) const;
     PPoint getPointByName(const QString &name) const;
@@ -139,7 +139,7 @@ public:
     void removePoint(uint index);
 
     //Property
-    size_t getCountProps() const;
+    int getCountProps() const;
     PProperty getPropertyByIndex(uint index) const;
     quintptr getIdPropertyByIndex(uint index) const;
     PProperty getPropertyById(quintptr id_prop) const;

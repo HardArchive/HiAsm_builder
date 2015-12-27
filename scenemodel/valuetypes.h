@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 //Project
 #include "cgt/CGTShare.h"
 #include "types.h"
@@ -18,7 +18,7 @@ struct LinkedElementInfo {
 typedef QSharedPointer<LinkedElementInfo> SharedLinkedElementInfo;
 Q_DECLARE_METATYPE(SharedLinkedElementInfo)
 
-struct ValueFont {
+struct ValueFont { //-V802
     QString name;
     uint size{};
     uchar style{};

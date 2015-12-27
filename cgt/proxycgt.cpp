@@ -26,13 +26,13 @@ namespace ProxyCgt
     {
         uint numArg = 1;
         for (const QVariant &v : args) {
-            qInfo("  Arg%d: %s", numArg, qUtf8Printable(v.toString()));
+            qInfo().noquote() << QString("  Arg%1: %2").arg(numArg).arg(v.toString());
             ++numArg;
         }
     }
     void printParamArgs(CgtParams index, const QVariant &value)
     {
-        qInfo("  Arg1: %s", qUtf8Printable(CgtParamsMap[index]));
+        qInfo("  Arg1: %s", qUtf8Printable(CgtParamsMap[index])); //-V108
         if (value.type() == QVariant::String) {
             qInfo("  Arg2: \"%s\"", qUtf8Printable(value.toString()));
         } else {
@@ -174,7 +174,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         ElementClass res = m_cgt->elGetClassIndex(id_element);
         printArgs({id(id_element)});
-        PRINT_RESULT(ElementClassMap[res])
+        PRINT_RESULT(ElementClassMap[res]) //-V108
 
         return res;
     }
@@ -249,7 +249,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         PointType res = m_cgt->ptGetType(id_point);
         printArgs({id(id_point)});
-        PRINT_RESULT(PointTypeMap[res])
+        PRINT_RESULT(PointTypeMap[res]) //-V108
 
         return res;
     }
@@ -294,7 +294,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         DataType res = m_cgt->propGetType(id_prop);
         printArgs({id(id_prop)});
-        PRINT_RESULT(DataTypeMap[res])
+        PRINT_RESULT(DataTypeMap[res]) //-V108
 
         return res;
     }
@@ -437,13 +437,13 @@ namespace ProxyCgt
             printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         case PARAM_DEBUG_MODE:
-            printParamArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value)); //-V206
             break;
         case PARAM_DEBUG_SERVER_PORT:
-            printParamArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value)); //-V206
             break;
         case PARAM_DEBUG_CLIENT_PORT:
-            printParamArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value)); //-V206
             break;
         case PARAM_PROJECT_PATH:
             printParamArgs(index, reinterpret_cast<const char *>(value));
@@ -461,10 +461,10 @@ namespace ProxyCgt
             printParamArgs(index, reinterpret_cast<const char *>(value));
             break;
         case PARAM_SDE_WIDTH:
-            printParamArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value)); //-V206
             break;
         case PARAM_SDE_HEIGHT:
-            printParamArgs(index, *reinterpret_cast<const int *>(value));
+            printParamArgs(index, *reinterpret_cast<const int *>(value)); //-V206
             break;
         case PARAM_COMPILER:
             printParamArgs(index, reinterpret_cast<const char *>(value));
@@ -489,7 +489,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         DataType res = m_cgt->arrType(id_value);
         printArgs({id(id_value)});
-        PRINT_RESULT(DataTypeMap[res])
+        PRINT_RESULT(DataTypeMap[res]) //-V108
 
         return res;
     }
@@ -534,7 +534,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         DataType res = m_cgt->dtType(id_value);
         printArgs({id(id_value)});
-        PRINT_RESULT(DataTypeMap[res])
+        PRINT_RESULT(DataTypeMap[res]) //-V108
 
         return res;
     }
@@ -630,7 +630,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         DataType res = m_cgt->ptGetDataType(id_point);
         printArgs({id(id_point)});
-        PRINT_RESULT(DataTypeMap[res])
+        PRINT_RESULT(DataTypeMap[res]) //-V108
 
         return res;
     }

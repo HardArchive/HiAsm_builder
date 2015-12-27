@@ -67,7 +67,7 @@ public:
     DataType getDataType() const;
 
     //Array
-    size_t getArraySize() const;
+    int getArraySize() const;
     SharedValue getArrayItemByIndex(uint index) const;
     QString getArrayItemName(uint index) const;
 

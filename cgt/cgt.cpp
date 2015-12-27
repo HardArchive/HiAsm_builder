@@ -57,7 +57,7 @@ namespace fcgt
 
     const char *strToCString(const QString &str)
     {
-        char *buf = new char[uint(str.size() + 1)];
+        char *buf = new char[size_t(str.size() + 1)];
         strcpy(buf, str.toLocal8Bit().data());
         return buf;
     }

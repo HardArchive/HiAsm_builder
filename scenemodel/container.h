@@ -57,7 +57,7 @@ public:
     PSceneModel getModel() const;
 
     //Element
-    size_t getCountElements() const;
+    int getCountElements() const;
     PElement getElementByIndex(uint index) const;
     quintptr getIdElementByIndex(uint index) const;
     PElement getElementByName(const QString &name) const;
