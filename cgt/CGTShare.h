@@ -45,7 +45,7 @@ enum ElementFlags {
 typedef QFlags<ElementFlags> ElementFlgs;
 
 //!ru Типы точек
-enum PointTypes {
+enum PointType {
     //ru Метод
     pt_Work = 1,
 
@@ -58,7 +58,7 @@ enum PointTypes {
     //ru Данные
     pt_Data
 };
-const static QMap<int, QString> PointTypesMap{
+const static QMap<int, QString> PointTypeMap{
     {pt_Work, "pt_Work"},
     {pt_Event, "pt_Event"},
     {pt_Var, "pt_Var"},
@@ -91,7 +91,7 @@ enum DataType {
     data_flags,
     data_object
 };
-const static QMap<int, QString> DataTypesMap{
+const static QMap<int, QString> DataTypeMap{
     {data_null, "data_null"},
     {data_int, "data_int"},
     {data_str, "data_str"},
@@ -393,7 +393,7 @@ struct TCodeGenTools {
     //ru без учета точек разрыва и хабов.
     CALLBACK quintptr(*ptGetRLinkPoint)(quintptr p);
     //ru Возвращает тип точек(константы PointTypes).
-    CALLBACK PointTypes(*ptGetType)(quintptr p);
+    CALLBACK PointType(*ptGetType)(quintptr p);
     //ru Возвращает имя точки.
     CALLBACK const char *(*ptGetName)(quintptr p);
     //ru Возвращает ID элемента, которому принадлежит точка.

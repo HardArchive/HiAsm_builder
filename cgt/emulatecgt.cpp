@@ -261,7 +261,7 @@ namespace EmulateCgt
     }
 
     //ru Получаем тип точки.
-    EXPORT PointTypes ptGetType(quintptr id_point)
+    EXPORT PointType ptGetType(quintptr id_point)
     {
         const PPoint p = m_model->getPointById(id_point);
         if (!p)

@@ -244,12 +244,12 @@ namespace ProxyCgt
 
         return res;
     }
-    EXPORT PointTypes ptGetType(quintptr id_point)
+    EXPORT PointType ptGetType(quintptr id_point)
     {
         PRINT_FUNC_INFO
-        PointTypes res = m_cgt->ptGetType(id_point);
+        PointType res = m_cgt->ptGetType(id_point);
         printArgs({id(id_point)});
-        PRINT_RESULT(PointTypesMap[res])
+        PRINT_RESULT(PointTypeMap[res])
 
         return res;
     }
@@ -294,7 +294,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         DataType res = m_cgt->propGetType(id_prop);
         printArgs({id(id_prop)});
-        PRINT_RESULT(DataTypesMap[res])
+        PRINT_RESULT(DataTypeMap[res])
 
         return res;
     }
@@ -489,7 +489,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         DataType res = m_cgt->arrType(id_value);
         printArgs({id(id_value)});
-        PRINT_RESULT(DataTypesMap[res])
+        PRINT_RESULT(DataTypeMap[res])
 
         return res;
     }
@@ -534,7 +534,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         DataType res = m_cgt->dtType(id_value);
         printArgs({id(id_value)});
-        PRINT_RESULT(DataTypesMap[res])
+        PRINT_RESULT(DataTypeMap[res])
 
         return res;
     }
@@ -630,7 +630,7 @@ namespace ProxyCgt
         PRINT_FUNC_INFO
         DataType res = m_cgt->ptGetDataType(id_point);
         printArgs({id(id_point)});
-        PRINT_RESULT(DataTypesMap[res])
+        PRINT_RESULT(DataTypeMap[res])
 
         return res;
     }

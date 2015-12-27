@@ -61,7 +61,7 @@ void Point::deserialize(const QJsonObject &object)
     m_id = object["id"].toVariant().toUInt();
     m_model->addPointToMap(this);
 
-    m_type = PointTypes(object["type"].toInt());
+    m_type = PointType(object["type"].toInt());
     m_dataType = DataType(object["dataType"].toInt());
     m_index = object["index"].toVariant().toUInt();
     m_name = object["name"].toString();
@@ -81,12 +81,12 @@ PElement Point::getParent() const
     return qobject_cast<PElement>(parent());
 }
 
-void Point::setType(PointTypes type)
+void Point::setType(PointType type)
 {
     m_type = type;
 }
 
-PointTypes Point::getType() const
+PointType Point::getType() const
 {
     return m_type;
 }

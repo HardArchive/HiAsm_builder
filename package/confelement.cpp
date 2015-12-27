@@ -14,6 +14,7 @@ ConfElement::ConfElement(const QString &pathFileConf)
     parseSections();
     parseType();
     parseProperty();
+    parseMethod();
 }
 
 void ConfElement::parseSections()
@@ -161,7 +162,7 @@ void ConfElement::parseProperty()
 
                 SharedConfProp prop = SharedConfProp::create();
                 prop->name = nameProp;
-                prop->description = descProp;
+                prop->desc = descProp;
                 prop->type = DataType(strType.toInt());
                 prop->value = value;
                 prop->listValues = listValues.split(QLatin1Char(','), QString::SkipEmptyParts);
@@ -230,6 +231,84 @@ void ConfElement::parseProperty()
                 nameProp += c; //Имя свойства
             else
                 descProp += c; //Описание свойства
+        }
+    }
+}
+
+void ConfElement::parseMethod()
+{
+    //* - скрытая точка
+
+    for (const QString &line : m_secMethod) {
+        //ConfMethod
+        QString name;
+        QString desc;
+        QString prop;
+        QString typeData;
+        QString typePoint;
+        bool hidden = false;
+
+        //Parser
+        bool propBegin = false;
+        bool propEnd = false;
+        bool equalSign = false;
+        uchar countPipe = 0;
+
+        const size_t outIndex = line.size();
+        for (size_t i = 0; i <= outIndex; ++i) {
+            if (i == outIndex) {
+                SharedConfMethod method = SharedConfMethod::create();
+                method->name = name;
+                method->desc = desc;
+                method->prop = prop;
+                method->pointType = PointType(typePoint.toInt());
+                method->dataType = DataType(typeData.toInt());
+
+                if (hidden)
+                    m_hiddenMethods << method;
+                else
+                    m_methods << method;
+
+                continue;
+            }
+            const QChar &c = line[i];
+
+            if (i == 0 && c == QLatin1Char('*')) {
+                hidden = true;
+                continue;
+            }
+            if (c == QLatin1Char('%')) {
+                if (!propBegin)
+                    propBegin = true;
+                else
+                    propEnd = true;
+
+                continue;
+            }
+            if (c == QLatin1Char('=')) {
+                equalSign = true;
+                continue;
+            }
+            if (c == QLatin1Char('|')) {
+                ++countPipe;
+                continue;
+            }
+            if (propBegin && !propEnd) {
+                prop += c;
+                continue;
+            }
+            if (countPipe) {
+                if (countPipe == 1)  //Тип точки
+                    typePoint += c;
+                if (countPipe == 2)  //Тип данных
+                    typeData += c;
+
+                continue;
+            }
+            if (!equalSign)
+                name += c; //Имя метода
+            else
+                desc += c; //Описание метода
         }
     }
 }

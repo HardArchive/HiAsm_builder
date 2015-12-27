@@ -18,7 +18,7 @@ class Point: public QObject
 private:
     //Self
     quintptr m_id{};
-    PointTypes m_type{};
+    PointType m_type{};
     DataType m_dataType{};
     uint m_index{};
     QString m_name;
@@ -53,8 +53,8 @@ public:
     quintptr getId() const;
     PElement getParent() const;
 
-    void setType(PointTypes type);
-    PointTypes getType() const;
+    void setType(PointType type);
+    PointType getType() const;
 
     void setDataType(DataType dataType);
     DataType getDataType() const;

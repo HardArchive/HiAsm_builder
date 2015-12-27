@@ -42,6 +42,10 @@ private:
     //Properties
     ListConfProps m_properties;
 
+    //methods
+    ListConfMethods m_methods;
+    ListConfMethods m_hiddenMethods;
+
     //Sections
     QStringList m_secAbout;
     QStringList m_secType;
@@ -56,6 +60,7 @@ private:
     void parseAbout();
     void parseType();
     void parseProperty();
+    void parseMethod();
 
 };
 typedef QSharedPointer<ConfElement> SharedConfElement;
