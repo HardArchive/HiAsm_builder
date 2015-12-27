@@ -270,7 +270,7 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
     if (!p)
         return nullptr;
 
-    static const QString nameDir = "compiler";
+    static const QString nameDir = "resources";
     QString nameTypeRes;
     QString fileName;
     QString ext;
@@ -331,25 +331,25 @@ const char *SceneModel::addStringRes(const QString &str)
 {
     if (str.isEmpty())
         return nullptr;
+    /*
+        static const QString nameCompilerDir = "resources";
+        static const QString nameFileRes = "STREAM";
+        QString suffix = QString::number(m_resourcesToDelete.size());
+        QString fileName = nameFileRes + suffix;
+        QString resFilePath = QDir::toNativeSeparators(
+                                  QDir::currentPath() + QDir::separator() +
+                                  nameCompilerDir + QDir::separator() + fileName
+                              );
+        QFile file(resFilePath);
+        if (!file.open(QIODevice::WriteOnly))
+            return nullptr;
 
-    static const QString nameCompilerDir = "compiler";
-    static const QString nameFileRes = "STREAM";
-    QString suffix = QString::number(m_resourcesToDelete.size());
-    QString fileName = nameFileRes + suffix;
-    QString resFilePath = QDir::toNativeSeparators(
-                              QDir::currentPath() + QDir::separator() +
-                              nameCompilerDir + QDir::separator() + fileName
-                          );
-    QFile file(resFilePath);
-    if (!file.open(QIODevice::WriteOnly))
-        return nullptr;
+        file.write(str.toLocal8Bit());
+        file.close();
+        m_resourcesToDelete.insert(resFilePath);
 
-    file.write(str.toLocal8Bit());
-    file.close();
-    m_resourcesToDelete.insert(resFilePath);
-
-
-    return fcgt::strToCString(fileName);
+    */
+    return nullptr;
 }
 void SceneModel::deleteResources()
 {
@@ -361,7 +361,7 @@ void SceneModel::deleteResources()
 
 void SceneModel::compileResources()
 {
-    static const QString NAME_DIR_OUTPUT_RESOURCES = "compiler";
+    static const QString NAME_DIR_OUTPUT_RESOURCES = "resources";
     static const QString NAME_FILE_RC = "allres.rc";
     static const QString NAME_FILE_RES = "allres.res";
     static const QString NAME_FILE_GORC = "GoRC.exe";
@@ -379,7 +379,7 @@ void SceneModel::compileResources()
         write << QString("%1 %2 %3\r\n").arg(file.baseName()).arg(m_resourcesForCompile[fullFileNameRes]).arg(fullFileNameRes);
     }
 
-    write << "ASMA ICON \"..\\int\\main.ico\"";
+    write << "ASMA ICON main.ico";
     file.close();
 
     QProcess::execute(QString("%1 /r %2").arg(NAME_FILE_GORC).arg(NAME_FILE_RC));

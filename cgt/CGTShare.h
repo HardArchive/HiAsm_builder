@@ -327,9 +327,9 @@ struct TBuildProcessRec {
     explicit TBuildProcessRec(PCodeGenTools _cgt, quintptr _sdk) : cgt(_cgt), sdk(_sdk) {}
 };
 
-typedef int(*t_buildPrepareProc)(void *params);
-typedef int(*t_buildProcessProc)(TBuildProcessRec &params);
-typedef int(*t_checkVersionProc)(const THiAsmVersion &params);
+typedef CgResult(*t_buildPrepareProc)(void *params);
+typedef CgResult(*t_buildProcessProc)(TBuildProcessRec &params);
+typedef CgResult(*t_checkVersionProc)(const THiAsmVersion &params);
 
 extern t_buildPrepareProc buildPrepareProcLib;
 extern t_buildProcessProc buildProcessProcLib;

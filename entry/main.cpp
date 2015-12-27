@@ -24,18 +24,15 @@ int main(int argc, char *argv[])
 
     PackageManager manager;
 
-
-    /*
-
     const QString codeGenFile = "CodeGen.dll";
     const QString makeExe = "make_exe.dll";
-    const QString packagePath = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "Elements/delphi/");
+    const QString packagePath = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "packages/delphi/");
     const QString codePath = QDir::toNativeSeparators(packagePath + "code/");
     const QString makePath = QDir::toNativeSeparators(packagePath + "make/");
     const QString fullPathCodeGen = packagePath + codeGenFile;
     const QString fullPathMakeExe = makePath + makeExe;
 
-    //ru Загружаем make_CNET в память
+    //ru Загружаем make_*.dll в память
     if (!QFile::exists(fullPathMakeExe)) {
         qCritical("%s library not found!", qPrintable(makeExe));
     }
@@ -122,7 +119,6 @@ int main(int argc, char *argv[])
 
     qInfo("Delete resources.");
     model.deleteResources();
-    */
 
     return a.exec();
 }

@@ -19,15 +19,14 @@ PackageManager::PackageManager(QObject *parent)
 
 void PackageManager::initPackages()
 {
-    QDir dirPackages(PackageManagerInfo::PACKAGES_DIR);
-    if (!dirPackages.exists()) {
-        qCritical() << trUtf8("Каталог \"%1\" не найден").arg(PackageManagerInfo::PACKAGES_DIR);
+    QDir packagesDir(m_packagesDir);
+    if (!packagesDir.exists()) {
         return;
     }
 
-    dirPackages.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-    for (const QFileInfo &dir : dirPackages.entryInfoList()) {
-        QFile fileInfo(dir.filePath() + QDir::separator() + PackageInfo::INFO_FILE_NAME);
+    packagesDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+    for (const QFileInfo &dir : packagesDir.entryInfoList()) {
+        QFile fileInfo(dir.filePath() + QDir::separator() + m_packagesDir);
 
         if (fileInfo.exists()) {
             auto pack = new Package(dir.absoluteFilePath(), this);
@@ -39,6 +38,4 @@ void PackageManager::initPackages()
             }
         }
     }
-
-    return;
 }
