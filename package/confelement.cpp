@@ -8,23 +8,24 @@
 
 //Qt
 
-ConfElement::ConfElement(const QString &pathFileConf)
-    : m_pathFileConf(pathFileConf)
+ConfElement::ConfElement(const QString &pathConf)
+    : m_pathConf(pathConf)
 {
-    parseSections();
-    parseType();
-    parseProperty();
-    parseMethod();
+    LoadConf();
 }
 
-void ConfElement::parseSections()
+void ConfElement::LoadConf()
 {
-    QFile file(m_pathFileConf);
+    QFile file(m_pathConf);
     file.open(QIODevice::ReadOnly);
     const QString data = QString::fromLocal8Bit(file.readAll());
     file.close();
 
     TypeSection section = ts_undefine;
+    QStringList secAbouts;
+    QStringList secTypes;
+    QStringList secProperties;
+    QStringList secPoints;
 
     for (QString line : data.split("\r\n")) {
         line = line.trimmed();
@@ -36,15 +37,15 @@ void ConfElement::parseSections()
             const QChar c = line.at(1).toLower();
 
             if (c == QLatin1Char('a')) {
-                section = ts_about;
+                section = ts_abouts;
             } else if (c == QLatin1Char('t')) {
-                section = ts_type;
+                section = ts_types;
             } else if (c == QLatin1Char('e')) {
                 section = ts_edit;
             } else if (c == QLatin1Char('p')) {
-                section = ts_property;
+                section = ts_properties;
             } else if (c == QLatin1Char('m')) {
-                section = ts_methods;
+                section = ts_points;
             } else {
                 section = ts_undefine;
             }
@@ -53,11 +54,11 @@ void ConfElement::parseSections()
         }
 
         switch (section) {
-        case ts_about:
-            m_secAbout << line;
+        case ts_abouts:
+            secAbouts << line;
             break;
-        case ts_type:
-            m_secType << line;
+        case ts_types:
+            secTypes << line;
             break;
         case ts_edit: {
             if (!m_editClass.isEmpty())
@@ -66,26 +67,44 @@ void ConfElement::parseSections()
                 m_editClass = line.section('=', 1, 1);
             break;
         }
-        case ts_property:
-            m_secProperty << line;
+        case ts_properties:
+            secProperties << line;
             break;
-        case ts_methods:
-            m_secMethod << line;
+        case ts_points:
+            secPoints << line;
             break;
         default:
             break;
         }
     }
+
+    parseAbout(secAbouts);
+    parseTypes(secTypes);
+    parseProperties(secProperties);
+    parsePoints(secPoints);
 }
 
-void ConfElement::parseAbout()
+void ConfElement::parseAbout(const QStringList &list)
 {
+    for (const QString &line : list) {
+        const QString &name = line.section(QLatin1Char('='), 0, 0).toLower();
+        const QString &value = line.section(QLatin1Char('='), 1, 1).toLower();
 
+        if (name == QLatin1String("version")) {
+            m_version = value;
+
+        } else if (name == QLatin1String("author")) {
+            m_author = value;
+
+        } else if (name == QLatin1String("mail")) {
+            m_mail = value;
+        }
+    }
 }
 
-void ConfElement::parseType()
+void ConfElement::parseTypes(const QStringList &list)
 {
-    for (const QString &line : m_secType) {
+    for (const QString &line : list) {
         QString sec0 = line.section("=", 0, 0).toLower();
         QString sec1 = line.section("=", 1, 1);
         if (sec0 == QLatin1String("class")) {
@@ -108,7 +127,7 @@ void ConfElement::parseType()
     }
 }
 
-void ConfElement::parseProperty()
+void ConfElement::parseProperties(const QStringList &list)
 {
     //##имя_группы=описание
     //## закрываем группу
@@ -125,13 +144,13 @@ void ConfElement::parseProperty()
     //Parser
     bool beginGroup = false;
 
-    for (const QString &line : m_secProperty) {
+    for (const QString &line : list) {
         //ConfProp
-        QString nameProp;
-        QString descProp;
+        QString name;
+        QString desc;
         QString value;
         QString listValues;
-        QString strType;
+        QString type;
         bool makePoint = false;
         bool activated = false;
 
@@ -161,9 +180,9 @@ void ConfElement::parseProperty()
                 }
 
                 SharedConfProp prop = SharedConfProp::create();
-                prop->name = nameProp;
-                prop->desc = descProp;
-                prop->type = DataType(strType.toInt());
+                prop->name = name;
+                prop->desc = desc;
+                prop->type = DataType(type.toInt());
                 prop->value = value;
                 prop->listValues = listValues.split(QLatin1Char(','), QString::SkipEmptyParts);
                 if (beginGroup)
@@ -172,23 +191,19 @@ void ConfElement::parseProperty()
                 prop->makePoint = makePoint;
 
                 m_properties << prop;
-                continue;
+                break;
             }
             const QChar &c = line[i];
 
             if (i < 2) {
                 if (c == QLatin1Char('#')) {
                     ++countSharp;
-                    continue;
-                }
-                if (c == QLatin1Char('@')) {
+                } else if (c == QLatin1Char('@')) {
                     makePoint = true;
-                    continue;
-                }
-                if (!makePoint && c == QLatin1Char('+')) {
+                } else if (!makePoint && c == QLatin1Char('+')) {
                     activated = true;
-                    continue;
                 }
+                continue;
             }
 
             if (c == QLatin1Char('=')) {
@@ -218,34 +233,33 @@ void ConfElement::parseProperty()
 
             if (countPipe) {
                 if (countPipe == 1)  //Тип
-                    strType += c;
-                if (countPipe == 2)  //Значение
+                    type += c;
+                else if (countPipe == 2) //Значение
                     value += c;
-                if (countPipe == 3)  //Список значений
+                else if (countPipe == 3) //Список значений
                     listValues += c;
 
                 continue;
             }
 
             if (!equalSign)
-                nameProp += c; //Имя свойства
+                name += c; //Имя свойства
             else
-                descProp += c; //Описание свойства
+                desc += c; //Описание свойства
         }
     }
 }
 
-void ConfElement::parseMethod()
+void ConfElement::parsePoints(const QStringList &list)
 {
     //* - скрытая точка
-
-    for (const QString &line : m_secMethod) {
-        //ConfMethod
+    for (const QString &line : list) {
+        //ConfPoint
         QString name;
         QString desc;
         QString prop;
-        QString typeData;
-        QString typePoint;
+        QString dataType;
+        QString pointType;
         bool hidden = false;
 
         //Parser
@@ -257,19 +271,19 @@ void ConfElement::parseMethod()
         const size_t outIndex = line.size();
         for (size_t i = 0; i <= outIndex; ++i) {
             if (i == outIndex) {
-                SharedConfMethod method = SharedConfMethod::create();
-                method->name = name;
-                method->desc = desc;
-                method->prop = prop;
-                method->pointType = PointType(typePoint.toInt());
-                method->dataType = DataType(typeData.toInt());
+                SharedConfPoint point = SharedConfPoint::create();
+                point->name = name;
+                point->desc = desc;
+                point->prop = prop;
+                point->pointType = PointType(pointType.toInt());
+                point->dataType = DataType(dataType.toInt());
 
                 if (hidden)
-                    m_hiddenMethods << method;
+                    m_hiddenPoints << point;
                 else
-                    m_methods << method;
+                    m_points << point;
 
-                continue;
+                break;
             }
             const QChar &c = line[i];
 
@@ -299,16 +313,16 @@ void ConfElement::parseMethod()
             }
             if (countPipe) {
                 if (countPipe == 1)  //Тип точки
-                    typePoint += c;
+                    pointType += c;
                 if (countPipe == 2)  //Тип данных
-                    typeData += c;
+                    dataType += c;
 
                 continue;
             }
             if (!equalSign)
-                name += c; //Имя метода
+                name += c; //Имя точки
             else
-                desc += c; //Описание метода
+                desc += c; //Описание точки
         }
     }
 }

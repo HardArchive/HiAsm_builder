@@ -11,15 +11,15 @@
 #include "QtCore"
 #include <QSharedPointer>
 
-struct ConfMethod {
-    QString name;   /**< method name */
-    QString prop;   /**< combo or comboex property */
-    QString desc;   /**< method description */
-    PointType pointType;      /**< method type pt_xxx */
-    DataType dataType;   /**< point type data_xxx */
+struct ConfPoint {
+    QString name;
+    QString prop;
+    QString desc;
+    PointType pointType;
+    DataType dataType;
 };
-typedef QSharedPointer<ConfMethod> SharedConfMethod;
-typedef QList<SharedConfMethod> ListConfMethods;
+typedef QSharedPointer<ConfPoint> SharedConfPoint;
+typedef QList<SharedConfPoint> ListConfPoints;
 
 struct ConfProp {
     QString name;
