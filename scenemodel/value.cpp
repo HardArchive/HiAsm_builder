@@ -7,7 +7,7 @@
 //Qt
 
 
-Value::Value(quintptr id_value, DataTypes type, const QVariant &value, const QString &name, DataTypes subType):
+Value::Value(quintptr id_value, DataType type, const QVariant &value, const QString &name, DataType subType):
     m_id(id_value),
     m_type(type),
     m_value(value),
@@ -94,9 +94,9 @@ QVariantMap Value::serialize()
 void Value::deserialize(const QJsonObject &object)
 {
     m_id = object["id"].toVariant().toUInt();
-    m_type = DataTypes(object["type"].toInt());
+    m_type = DataType(object["type"].toInt());
     m_name = object["name"].toString();
-    m_subType = DataTypes(object["subType"].toInt());
+    m_subType = DataType(object["subType"].toInt());
 
     switch (m_type) {
     case data_int:
@@ -202,12 +202,12 @@ quintptr Value::getId() const
     return m_id;
 }
 
-void Value::setType(DataTypes type)
+void Value::setType(DataType type)
 {
     m_type = type;
 }
 
-DataTypes Value::getType() const
+DataType Value::getType() const
 {
     return m_type;
 }
@@ -264,7 +264,7 @@ QString Value::toString() const
     return m_value.value<QString>();
 }
 
-DataTypes Value::getDataType() const
+DataType Value::getDataType() const
 {
     return m_subType;
 }
@@ -277,12 +277,12 @@ size_t Value::getArraySize() const
     return m_value.value<Values>().size();
 }
 
-void Value::setSubType(DataTypes type)
+void Value::setSubType(DataType type)
 {
     m_subType = type;
 }
 
-DataTypes Value::getSubType() const
+DataType Value::getSubType() const
 {
     return m_subType;
 }

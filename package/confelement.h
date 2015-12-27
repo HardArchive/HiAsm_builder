@@ -37,7 +37,7 @@ private:
     QString m_editClass;
 
     //Group
-    ListConfPropGroup m_group;
+    MapPropGroup m_group;
 
     //Properties
     ListConfProps m_properties;

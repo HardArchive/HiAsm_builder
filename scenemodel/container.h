@@ -2,6 +2,7 @@
 
 //Project
 #include "types.h"
+#include "cgt/CGTShare.h"
 
 //STL
 
@@ -18,14 +19,18 @@ private:
     quintptr m_id{};
     QString m_name;
 
+    //CGT
+    PCodeGenTools m_cgt{};
+
     //Model
-    PSceneModel const m_model;
+    PSceneModel m_model{};
 
     //Element
     Elements m_elements;
 
 private:
     Q_PROPERTY(PSceneModel model READ getModel)
+    Q_PROPERTY(PCodeGenTools cgt READ getCgt)
 
 public:
     explicit Container(quintptr id_sdk, QObject *parent);
@@ -44,6 +49,9 @@ public:
     PElement getParent() const;
     void setName(const QString &name);
     QString getName() const;
+
+    //CGT
+    PCodeGenTools getCgt();
 
     //Model
     PSceneModel getModel() const;

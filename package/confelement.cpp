@@ -112,60 +112,84 @@ void ConfElement::parseProperty()
     //##имя_группы=описание
     //## закрываем группу
 
-    //+ свойсво по-умолчанию, т.е. открывается редактор
+    //+ activated - свойсво по-умолчанию, т.е. открывается редактор
     //при двойном клике.
 
-    //@ Позволяет активировать свойство в виде метода с префиксом do*
+    //@ makePoint - Позволяет активировать свойство в виде метода с префиксом do*
 
+
+    //PropGroup
+    QString nameGroup;
+
+    //Parser
     bool beginGroup = false;
-    bool endGroup = false;
+
     for (const QString &line : m_secProperty) {
+        //ConfProp
+        QString nameProp;
+        QString descProp;
+        QString value;
+        QString listValues;
+        QString strType;
         bool makePoint = false;
         bool activated = false;
+
+        //PropGroup
+        QString descGroup;
+
+        //Parser
         bool equalSign = false;
         bool beginGroupLine = false;
         uchar countPipe = 0;
         uchar countSharp = 0;
-        QString nameGroup;
-        QString descGroup;
-        QString nameProp;
-        QString descProp;
 
-        QString strType;
-        QString value;
-
-        QString buffer;
         size_t outIndex = line.size();
 
         for (size_t i = 0; i <= outIndex; ++i) {
             if (i == outIndex) {
                 if (beginGroupLine) {
-                    m_group << SharedConfPropGroup::create(nameGroup, descGroup);
+                    m_group.insert(nameGroup, descGroup);
                     continue;
                 }
+                if (countSharp == 2) {
+                    if (beginGroup) {
+                        beginGroup = false;
+                        nameGroup.clear();
+                        continue;
+                    }
+                }
+
                 SharedConfProp prop = SharedConfProp::create();
+                prop->name = nameProp;
+                prop->description = descProp;
+                prop->type = DataType(strType.toInt());
+                prop->value = value;
+                prop->listValues = listValues.split(QLatin1Char(','), QString::SkipEmptyParts);
+                if (beginGroup)
+                    prop->group = nameGroup;
                 prop->activated = activated;
                 prop->makePoint = makePoint;
-                prop->name = nameProp;
-                prop->value = value;
 
                 m_properties << prop;
                 continue;
             }
             const QChar &c = line[i];
 
-            if (c == QLatin1Char('#')) {
-                ++countSharp;
-                continue;
+            if (i < 2) {
+                if (c == QLatin1Char('#')) {
+                    ++countSharp;
+                    continue;
+                }
+                if (c == QLatin1Char('@')) {
+                    makePoint = true;
+                    continue;
+                }
+                if (!makePoint && c == QLatin1Char('+')) {
+                    activated = true;
+                    continue;
+                }
             }
-            if (c == QLatin1Char('@')) {
-                activated = true;
-                continue;
-            }
-            if (c == QLatin1Char('+')) {
-                makePoint = true;
-                continue;
-            }
+
             if (c == QLatin1Char('=')) {
                 equalSign = true;
                 continue;
@@ -184,9 +208,9 @@ void ConfElement::parseProperty()
 
             if (beginGroupLine) {
                 if (!equalSign)
-                    nameGroup += c;
+                    nameGroup += c; //Имя группы
                 else
-                    descGroup += c;
+                    descGroup += c; //Описание
 
                 continue;
             }
@@ -196,16 +220,16 @@ void ConfElement::parseProperty()
                     strType += c;
                 if (countPipe == 2)  //Значение
                     value += c;
+                if (countPipe == 3)  //Список значений
+                    listValues += c;
 
                 continue;
             }
 
             if (!equalSign)
-                nameProp += c;
+                nameProp += c; //Имя свойства
             else
-                descProp += c;
+                descProp += c; //Описание свойства
         }
-
-        qInfo() << "test";
     }
 }

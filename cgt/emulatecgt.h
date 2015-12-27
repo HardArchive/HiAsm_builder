@@ -1,11 +1,11 @@
 #pragma once
+
 //Project
 #include "scenemodel/scenemodel.h"
 
 //STL
 
 //Qt
-
 
 namespace EmulateCgt
 {

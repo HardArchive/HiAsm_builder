@@ -19,7 +19,7 @@ private:
     //Self
     quintptr m_id{};
     PointTypes m_type{};
-    DataTypes m_dataType{};
+    DataType m_dataType{};
     uint m_index{};
     QString m_name;
     QString m_dpeName;
@@ -27,11 +27,15 @@ private:
     quintptr m_linkPoint{};
     quintptr m_RLinkPoint{};
 
+    //CGT
+    PCodeGenTools m_cgt{};
+
     //Model
-    PSceneModel const m_model;
+    PSceneModel m_model{};
 
 private:
     Q_PROPERTY(PSceneModel model READ getModel)
+    Q_PROPERTY(PCodeGenTools cgt READ getCgt)
 
 public:
     explicit Point(quintptr id_point, QObject *parent);
@@ -52,8 +56,8 @@ public:
     void setType(PointTypes type);
     PointTypes getType() const;
 
-    void setDataType(DataTypes dataType);
-    DataTypes getDataType() const;
+    void setDataType(DataType dataType);
+    DataType getDataType() const;
 
     void setIndex(uint index);
     uint getIndex() const;
@@ -72,6 +76,9 @@ public:
 
     void setRLinkPoint(quintptr RLinkPoint);
     quintptr getRLinkPoint() const;
+
+    //CGT
+    PCodeGenTools getCgt();
 
     //Model
     PSceneModel getModel();

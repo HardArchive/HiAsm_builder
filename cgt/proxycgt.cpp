@@ -289,10 +289,10 @@ namespace ProxyCgt
 
         return res;
     }
-    EXPORT DataTypes propGetType(quintptr id_prop)
+    EXPORT DataType propGetType(quintptr id_prop)
     {
         PRINT_FUNC_INFO
-        DataTypes res = m_cgt->propGetType(id_prop);
+        DataType res = m_cgt->propGetType(id_prop);
         printArgs({id(id_prop)});
         PRINT_RESULT(DataTypesMap[res])
 
@@ -484,10 +484,10 @@ namespace ProxyCgt
 
         return res;
     }
-    EXPORT DataTypes arrType(quintptr id_value)
+    EXPORT DataType arrType(quintptr id_value)
     {
         PRINT_FUNC_INFO
-        DataTypes res = m_cgt->arrType(id_value);
+        DataType res = m_cgt->arrType(id_value);
         printArgs({id(id_value)});
         PRINT_RESULT(DataTypesMap[res])
 
@@ -497,7 +497,7 @@ namespace ProxyCgt
     {
         PRINT_FUNC_INFO
         const char *res = m_cgt->arrItemName(id_value, index);
-        printArgs({id_value, index});
+        printArgs({id(id_value), index});
         PRINT_RESULT(str(res))
 
         return res;
@@ -506,7 +506,7 @@ namespace ProxyCgt
     {
         PRINT_FUNC_INFO
         const quintptr res = m_cgt->arrItemData(id_value, index);
-        printArgs({id_value, index});
+        printArgs({id(id_value), index});
         PRINT_RESULT(id(res))
 
         return res;
@@ -529,10 +529,10 @@ namespace ProxyCgt
 
         return res;
     }
-    EXPORT DataTypes dtType(quintptr id_value)
+    EXPORT DataType dtType(quintptr id_value)
     {
         PRINT_FUNC_INFO
-        DataTypes res = m_cgt->dtType(id_value);
+        DataType res = m_cgt->dtType(id_value);
         printArgs({id(id_value)});
         PRINT_RESULT(DataTypesMap[res])
 
@@ -625,10 +625,10 @@ namespace ProxyCgt
         m_cgt->elSetData(id_element, data);
         printArgs({id(id_element), p(data)});
     }
-    EXPORT DataTypes ptGetDataType(quintptr id_point)
+    EXPORT DataType ptGetDataType(quintptr id_point)
     {
         PRINT_FUNC_INFO
-        DataTypes res = m_cgt->ptGetDataType(id_point);
+        DataType res = m_cgt->ptGetDataType(id_point);
         printArgs({id(id_point)});
         PRINT_RESULT(DataTypesMap[res])
 
@@ -737,7 +737,7 @@ namespace ProxyCgt
     {
         PRINT_FUNC_INFO
         quintptr res = m_cgt->propGetLinkedElementInfo(id_element, id_prop, info);
-        printArgs({id(id_element), id(id_prop), info});
+        printArgs({id(id_element), id(id_prop), str(info)});
         PRINT_RESULT(id(res))
 
         return 0;
@@ -808,7 +808,7 @@ namespace ProxyCgt
     {
         PRINT_FUNC_INFO
         int res = m_cgt->resSetPref(pref);
-        printArgs({pref});
+        printArgs({str(pref)});
         PRINT_RESULT(res)
 
         return res;
@@ -817,7 +817,7 @@ namespace ProxyCgt
     {
         PRINT_FUNC_INFO
         int res = m_cgt->_Error(line, id_element, text);
-        printArgs({line, id(id_element), text});
+        printArgs({line, id(id_element), str(text)});
         PRINT_RESULT(res)
 
         return res;
@@ -835,7 +835,7 @@ namespace ProxyCgt
     {
         PRINT_FUNC_INFO
         int res = m_cgt->propSaveToFile(id_prop, fileName);
-        printArgs({id(id_prop), fileName});
+        printArgs({id(id_prop), str(fileName)});
         PRINT_RESULT(res)
 
         return res;

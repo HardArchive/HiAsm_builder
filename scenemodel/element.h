@@ -34,8 +34,11 @@ private:
     QString m_inherit;
     QString m_infSub;
 
+    //CGT
+    PCodeGenTools m_cgt{};
+
     //Model
-    PSceneModel const m_model;
+    PSceneModel m_model{};
 
     //Container
     Containers m_containers;
@@ -48,6 +51,7 @@ private:
 
 private:
     Q_PROPERTY(PSceneModel model READ getModel)
+    Q_PROPERTY(PCodeGenTools cgt READ getCgt)
 
 public:
     explicit Element(quintptr id_element, QObject *parent);
@@ -109,6 +113,9 @@ public:
 
     void setInfSub(const QString &infSub);
     QString getInfSub() const;
+
+    //CGT
+    PCodeGenTools getCgt();
 
     //Model
     PSceneModel getModel();

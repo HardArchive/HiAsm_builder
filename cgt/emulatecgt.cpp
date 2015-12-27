@@ -313,7 +313,7 @@ namespace EmulateCgt
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ свойства элемента ~~~~~~~~~~~~~~~~~~~~~~~~~~
     //ru Возвращает тип свойства.
-    EXPORT DataTypes propGetType(quintptr id_prop)
+    EXPORT DataType propGetType(quintptr id_prop)
     {
         PProperty p = m_model->getPropertyById(id_prop);
         if (!p)
@@ -475,7 +475,7 @@ namespace EmulateCgt
     }
 
     //ru Получаем тип элементов в массиве.
-    EXPORT DataTypes arrType(quintptr id_array)
+    EXPORT DataType arrType(quintptr id_array)
     {
         const PValue v = m_model->getValueById(id_array);
         if (!v)
@@ -536,7 +536,7 @@ namespace EmulateCgt
     //!~~~~~~~~~~~~~~~~~~~~~~~~ работа с данными ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     //ru Возвращает тип данных.
-    EXPORT DataTypes dtType(quintptr id_value)
+    EXPORT DataType dtType(quintptr id_value)
     {
         const PValue v = m_model->getValueById(id_value);
         if (!v)
@@ -671,7 +671,7 @@ namespace EmulateCgt
 
     //!~~~~~~~~~~~~~~~~~~~~~~~~ точки элемента ~~~~~~~~~~~~~~~~~~~~~~~~~~
     //ru Возвращает тип данных точки.
-    EXPORT DataTypes ptGetDataType(quintptr id_point)
+    EXPORT DataType ptGetDataType(quintptr id_point)
     {
         const PPoint p = m_model->getPointById(id_point);
         if (!p)

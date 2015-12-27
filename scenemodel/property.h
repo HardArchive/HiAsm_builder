@@ -20,8 +20,11 @@ private:
     //Self
     quintptr m_id{};
     QString m_name;
-    DataTypes m_type{};
+    DataType m_type{};
     bool m_isDefProp{};
+
+    //CGT
+    PCodeGenTools m_cgt{};
 
     //Model
     PSceneModel m_model{};
@@ -31,12 +34,13 @@ private:
 
 private:
     Q_PROPERTY(PSceneModel model READ getModel)
+    Q_PROPERTY(PCodeGenTools cgt READ getCgt)
 
 public:
     explicit Property(quintptr id_prop, QObject *parent);
     explicit Property(const QJsonObject &object, QObject *parent);
     explicit Property(quintptr id = 0,
-                      DataTypes type = data_null,
+                      DataType type = data_null,
                       const QVariant &data = QVariant(),
                       const QString &name = QString());
 
@@ -54,18 +58,18 @@ public:
     void setName(const QString &name);
     QString getName() const;
 
-    void setType(DataTypes type);
-    DataTypes getType() const;
+    void setType(DataType type);
+    DataType getType() const;
 
     void setIsDefProp(bool value);
     bool getIsDefProp() const;
 
     //Value
     void setValue(quintptr id = 0,
-                  DataTypes type = data_null,
+                  DataType type = data_null,
                   const QVariant &data = QVariant(),
                   const QString &name = QString(),
-                  DataTypes arrayType = data_null);
+                  DataType arrayType = data_null);
 
     PValue getValue();
     uchar toByte() const;
@@ -73,6 +77,9 @@ public:
     qreal toReal() const;
     QString toString() const;
     const SharedLinkedElementInfo toLinkedElementInfo() const;
+
+    //CGT
+    PCodeGenTools getCgt();
 
     //Model
     PSceneModel getModel();

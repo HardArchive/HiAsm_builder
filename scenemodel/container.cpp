@@ -11,6 +11,7 @@
 Container::Container(quintptr id_sdk, QObject *parent)
     : QObject(parent)
     , m_id(id_sdk)
+    , m_cgt(parent->property("cgt").value<PCodeGenTools>())
     , m_model(parent->property("model").value<PSceneModel>())
 {
     m_model->addContainerToMap(this);
@@ -19,6 +20,7 @@ Container::Container(quintptr id_sdk, QObject *parent)
 
 Container::Container(const QJsonObject &object, QObject *parent)
     : QObject(parent)
+    , m_cgt(parent->property("cgt").value<PCodeGenTools>())
     , m_model(parent->property("model").value<PSceneModel>())
 {
     deserialize(object);
@@ -26,9 +28,9 @@ Container::Container(const QJsonObject &object, QObject *parent)
 
 void Container::collectingData()
 {
-    int countElements = cgt::sdkGetCount(m_id);
+    int countElements = m_cgt->sdkGetCount(m_id);
     for (int i = 0; i < countElements; ++i) {
-        quintptr id_element = cgt::sdkGetElement(m_id, i);
+        quintptr id_element = m_cgt->sdkGetElement(m_id, i);
 
         //ru Добавляем элемент в контейнер
         addElement(new Element(id_element, this));
@@ -79,6 +81,11 @@ PElement Container::getParent() const
 QString Container::getName() const
 {
     return m_name;
+}
+
+PCodeGenTools Container::getCgt()
+{
+    return m_cgt;
 }
 
 PSceneModel Container::getModel() const

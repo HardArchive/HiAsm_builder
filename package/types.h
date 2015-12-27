@@ -13,28 +13,18 @@
 
 struct ConfProp {
     QString name;
+    QString description;
     QString value;
-    DataTypes type{};
-    int groupIndex = -1;
+    QStringList listValues;
+    QString group;
+    DataType type{};
     bool makePoint = false;
     bool activated = false;
 };
 typedef QSharedPointer<ConfProp> SharedConfProp;
 typedef QList<SharedConfProp> ListConfProps;
 
-struct ConfPropGroup {
-    QString name;
-    QString desc;
-
-    ConfPropGroup(const QString &_name, const QString &_desc)
-        : name(_name)
-        , desc(_desc)
-    {
-
-    }
-};
-typedef QSharedPointer<ConfPropGroup> SharedConfPropGroup;
-typedef QList<SharedConfPropGroup> ListConfPropGroup;
+typedef QMap<QString, QString> MapPropGroup;
 
 struct ProjectInfo {
     QString name;

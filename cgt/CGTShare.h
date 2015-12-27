@@ -3,6 +3,7 @@
 //Project
 
 //STL
+#include <functional>
 
 //Qt
 #include <QtCore>
@@ -65,7 +66,7 @@ const static QMap<int, QString> PointTypesMap{
 };
 
 //!ru Типы данных
-enum DataTypes {
+enum DataType {
     data_null = 0,
     data_int,
     data_str,
@@ -293,11 +294,11 @@ struct TBuildRunRec {
     void *data;
 };
 
-typedef CgResult(*t_buildCompliteProc)(const TBuildCompliteRec &params);
-typedef CgResult(*t_buildGetParamsProc)(TBuildParams &params);
-typedef CgResult(*t_buildMakePrj)(const TBuildMakePrjRec &params);
-typedef CgResult(*t_buildRunProc)(TBuildRunRec &params);
-typedef CgResult(*t_buildStopProc)(TBuildRunRec &params);
+typedef int(*t_buildCompliteProc)(const TBuildCompliteRec &params);
+typedef int(*t_buildGetParamsProc)(TBuildParams &params);
+typedef int(*t_buildMakePrj)(const TBuildMakePrjRec &params);
+typedef int(*t_buildRunProc)(TBuildRunRec &params);
+typedef int(*t_buildStopProc)(TBuildRunRec &params);
 
 extern t_buildGetParamsProc buildGetParamsProc;
 extern t_buildMakePrj buildMakePrj;
@@ -309,8 +310,7 @@ extern t_buildStopProc buildStopProc;
  * Описание интерфейса библиотеки CodeGen.
  *
 */
-
-struct TCodeGenTools;
+class TCodeGenTools;
 typedef TCodeGenTools *PCodeGenTools;
 
 struct THiAsmVersion {
@@ -327,9 +327,9 @@ struct TBuildProcessRec {
     explicit TBuildProcessRec(PCodeGenTools _cgt, quintptr _sdk) : cgt(_cgt), sdk(_sdk) {}
 };
 
-typedef CgResult(*t_buildPrepareProc)(void *params);
-typedef CgResult(*t_buildProcessProc)(TBuildProcessRec &params);
-typedef CgResult(*t_checkVersionProc)(const THiAsmVersion &params);
+typedef int(*t_buildPrepareProc)(void *params);
+typedef int(*t_buildProcessProc)(TBuildProcessRec &params);
+typedef int(*t_checkVersionProc)(const THiAsmVersion &params);
 
 extern t_buildPrepareProc buildPrepareProcLib;
 extern t_buildProcessProc buildProcessProcLib;
@@ -404,7 +404,7 @@ struct TCodeGenTools {
     CALLBACK const char *(*pt_dpeGetName)(quintptr p);
     //!~~~~~~~~~~~~~~~~~~~~~~~~ свойства элемента ~~~~~~~~~~~~~~~~~~~~~~~~~~
     //ru Возвращает тип свойства.
-    CALLBACK DataTypes(*propGetType)(quintptr prop);
+    CALLBACK DataType(*propGetType)(quintptr prop);
     //ru Возвращает имя свойства.
     CALLBACK const char *(*propGetName)(quintptr prop);
     //ru Возвращает значение свойства в виде указателя на данные.
@@ -457,7 +457,7 @@ struct TCodeGenTools {
     //ru Возвращает количество элементов в массиве.
     CALLBACK int (*arrCount)(quintptr a);
     //ru Возвращает тип элементов в массиве.
-    CALLBACK DataTypes(*arrType)(quintptr a);
+    CALLBACK DataType(*arrType)(quintptr a);
     //ru Возвращает имя элемента с индексом Index.
     CALLBACK const char *(*arrItemName)(quintptr a, int Index);
     //ru Возвращает значение элемента с индексом Index
@@ -471,7 +471,7 @@ struct TCodeGenTools {
     CALLBACK int (*isDebug)(quintptr e);
     //!~~~~~~~~~~~~~~~~~~~~~~~~ работа с данными ~~~~~~~~~~~~~~~~~~~~~~~~~~
     //ru Возвращает тип данных.
-    CALLBACK DataTypes(*dtType)(quintptr d);
+    CALLBACK DataType(*dtType)(quintptr d);
     //ru Возвращает данные в формате: строка в стиле C.
     CALLBACK const char *(*dtStr)(quintptr d);
     //ru Возвращает данные в формате: целое число.
@@ -501,7 +501,7 @@ struct TCodeGenTools {
     CALLBACK void (*elSetData)(quintptr e, quintptr data);
     //!~~~~~~~~~~~~~~~~~~~~~~~~ точки элемента ~~~~~~~~~~~~~~~~~~~~~~~~~~
     //ru Возвращает тип данных точки.
-    CALLBACK DataTypes(*ptGetDataType)(quintptr p);
+    CALLBACK DataType(*ptGetDataType)(quintptr p);
     //!~~~~~~~~~~~~~~~~~~~~~~~~ элемент ~~~~~~~~~~~~~~~~~~~~~~~~~~
     //ru Возвращает ID родительского контейнера элемента.
     CALLBACK quintptr(*elGetParent)(quintptr e);
@@ -570,3 +570,5 @@ struct TCodeGenTools {
     //[deprecated]
     CALLBACK int (*propSaveToFile)(quintptr p, const char *fileName);
 };
+
+Q_DECLARE_METATYPE(PCodeGenTools)
