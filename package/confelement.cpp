@@ -73,8 +73,12 @@ void ConfElement::LoadConf()
         case ts_points:
             secPoints << line;
             break;
-        default:
+        default: {
+            qWarning(qUtf8Printable("При загрузке конфигурации элемента, найден неизвестный параметр."));
+            qWarning("Файл: \"%s\"", qUtf8Printable(m_pathConf));
+            qWarning("Параметр: \"%s\"", qUtf8Printable(line));
             break;
+        }
         }
     }
 
@@ -110,7 +114,7 @@ void ConfElement::parseTypes(const QStringList &list)
         if (sec0 == QLatin1String("class")) {
             m_class = sec1;
         } else if (sec0 == QLatin1String("inherit")) {
-            m_inherit = sec1;
+            m_inherits = sec1.split(QLatin1Char(','), QString::SkipEmptyParts);
         } else if (sec0 == QLatin1String("sub")) {
             m_sub = sec1;
         } else if (sec0 == QLatin1String("info")) {

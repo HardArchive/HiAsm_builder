@@ -30,7 +30,7 @@ private:
 
     //Type
     QString m_class;
-    QString m_inherit;
+    QStringList m_inherits;
     QString m_sub;
     QString m_info;
     QString m_icon;
