@@ -28,12 +28,13 @@ DEFINES += APP_COMPANY=\"\\\"$$QMAKE_TARGET_COMPANY\\\"\" \
            APP_VERSION=\"\\\"$$VERSION\\\"\"
 
 SOURCES += $$files("cgt/*.cpp", true)
-SOURCES += $$files("scenemodel/*.cpp", true)
-SOURCES += $$files("entry/*.cpp", true)
-
 HEADERS += $$files("cgt/*.h", true)
+SOURCES += $$files("scenemodel/*.cpp", true)
 HEADERS += $$files("scenemodel/*.h", true)
+SOURCES += $$files("entry/*.cpp", true)
 HEADERS += $$files("entry/*.h", true)
+SOURCES += $$files("package/*.cpp", true)
+HEADERS += $$files("package/*.h", true)
 
 #Подключаем логгер
 include(logger/logger.pri)
