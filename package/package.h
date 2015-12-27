@@ -15,6 +15,7 @@ namespace PackageInfo
 {
     static const QString INFO_FILE_NAME = "package";
     static const QString CONF_DIR = "conf";
+    static const QString ICON_DIR = "icon";
 }
 
 class Package : public QObject

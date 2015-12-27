@@ -11,10 +11,17 @@
 ConfElement::ConfElement(const QString &pathConf)
     : m_pathConf(pathConf)
 {
-    LoadConf();
+    initConfElement();
+    loadConf();
 }
 
-void ConfElement::LoadConf()
+void ConfElement::initConfElement()
+{
+    QFileInfo file(m_pathConf);
+    m_name = file.baseName();
+}
+
+void ConfElement::loadConf()
 {
     QFile file(m_pathConf);
     file.open(QIODevice::ReadOnly);
@@ -120,7 +127,7 @@ void ConfElement::parseTypes(const QStringList &list)
         } else if (sec0 == QLatin1String("info")) {
             m_info = sec1;
         } else if (sec0 == QLatin1String("icon")) {
-            m_icon = sec1;
+            m_propIcon = sec1;
         } else if (sec0 == QLatin1String("view")) {
             m_view = sec1;
         } else if (sec0 == QLatin1String("tab")) {

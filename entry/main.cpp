@@ -2,8 +2,8 @@
 #include "cgt/cgt.h"
 #include "cgt/emulatecgt.h"
 #include "scenemodel/scenemodel.h"
-#include "logger.h"
 #include "package/packagemanager.h"
+#include "logger.h"
 
 //STL
 
@@ -23,6 +23,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion(APP_VERSION);
 
     PackageManager manager;
+
+    /*
 
     const QString codeGenFile = "CodeGen.dll";
     const QString makeExe = "make_exe.dll";
@@ -119,6 +121,7 @@ int main(int argc, char *argv[])
 
     qInfo("Delete resources.");
     model.deleteResources();
+    */
 
     return a.exec();
 }

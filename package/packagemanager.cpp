@@ -25,17 +25,12 @@ void PackageManager::initPackages()
     }
 
     packagesDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-    for (const QFileInfo &dir : packagesDir.entryInfoList()) {
-        QFile fileInfo(dir.filePath() + QDir::separator() + m_packagesDir);
-
-        if (fileInfo.exists()) {
-            auto pack = new Package(dir.absoluteFilePath(), this);
-
-            if (pack->getSuccess()) {
-                m_packages.append(pack);
-            } else {
-                delete pack;
-            }
+    for (const QFileInfo &packInfo : packagesDir.entryInfoList()) {
+        auto pack = new Package(packInfo.absoluteFilePath(), this);
+        if (pack->getSuccess()) {
+            m_packages.append(pack);
+        } else {
+            delete pack;
         }
     }
 }

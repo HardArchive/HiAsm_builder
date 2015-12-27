@@ -18,7 +18,11 @@ Package::Package(const QString &packagePath, QObject *parent = 0)
 
     //Задаём путь к файлу информации о пакете
     m_packageFileInfo = m_packagePath + QDir::separator() + PackageInfo::INFO_FILE_NAME;
-    
+    if (!QFile::exists(m_packageFileInfo)) {
+        setSuccess(false);
+        return;
+    }
+
     //Задаём путь к папке с элементами
     m_confPath = m_packagePath + QDir::separator() + PackageInfo::CONF_DIR;
 

@@ -21,7 +21,10 @@ class ConfElement
     };
 
 private:
+    //Self
     QString m_pathConf;
+    QString m_name;
+    //QIcon m_icon;
 
     //About
     QString m_version;
@@ -33,7 +36,7 @@ private:
     QStringList m_inherits;
     QString m_sub;
     QString m_info;
-    QString m_icon;
+    QString m_propIcon;
     QString m_view;
     QString m_tab;
     QString m_interfaces;
@@ -55,7 +58,8 @@ public:
     explicit ConfElement(const QString &pathConf);
 
 private:
-    void LoadConf();
+    void initConfElement();
+    void loadConf();
     void parseAbout(const QStringList &list);
     void parseTypes(const QStringList &list);
     void parseProperties(const QStringList &list);
