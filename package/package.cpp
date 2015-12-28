@@ -40,7 +40,8 @@ Package::Package(const QString &packagePath, QObject *parent)
         return;
     }
 
-    assignInherits();
+    //Добавляем информацию из наследуемых элементов
+    addInheritableData();
 
     setSuccess(true);
 }
@@ -207,10 +208,10 @@ bool Package::loadElements()
     return true;
 }
 
-void Package::assignInherits()
+void Package::addInheritableData()
 {
     for (SharedConfElement &conf : m_confElements) {
-        conf->assignInherit(this);
+        conf->addInheritableData(this);
     }
 }
 

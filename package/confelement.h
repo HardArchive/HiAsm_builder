@@ -26,8 +26,8 @@ private:
     QString m_name;
     //QIcon m_icon;
 
-    //Inherit
-    bool m_isInherit = false;
+    //Inherited
+    bool m_isInherited = false;
 
     //About
     QString m_version;
@@ -109,7 +109,7 @@ public:
     void setEditClass(const QString &editClass);
 
     //Inherits
-    void assignInherit(PPackage pack);
+    void addInheritableData(PPackage pack);
 
     ListConfProps getProperties() const;
     ListConfPoints getPoints() const;

@@ -139,9 +139,9 @@ void ConfElement::setEditClass(const QString &editClass)
     m_editClass = editClass;
 }
 
-void ConfElement::assignInherit(PPackage pack)
+void ConfElement::addInheritableData(PPackage pack)
 {
-    if (m_isInherit && !pack)
+    if (m_isInherited && !pack)
         return;
 
     ListConfProps props;
@@ -152,7 +152,7 @@ void ConfElement::assignInherit(PPackage pack)
 
         return false;
     };
-    auto assignProps = [&props, containsProp](const ListConfProps & inheritProps) {
+    auto inheritProps = [&props, containsProp](const ListConfProps & inheritProps) {
         for (const SharedConfProp &prop : inheritProps)
             if (!containsProp(prop->name))
                 props.append(prop);
@@ -164,7 +164,7 @@ void ConfElement::assignInherit(PPackage pack)
                 return true;
         return false;
     };
-    auto assignPoints = [containsPoint](const ListConfPoints & inheritPoints, ListConfPoints & points) {
+    auto inheritPoints = [containsPoint](const ListConfPoints & inheritPoints, ListConfPoints & points) {
         for (const SharedConfPoint &point : inheritPoints)
             if (!containsPoint(points, point->name))
                 points.append(point);
@@ -174,25 +174,25 @@ void ConfElement::assignInherit(PPackage pack)
     ListConfPoints points;
     for (const QString &name : m_inherit) {
         SharedConfElement e = pack->getElementByName(name);
-        e->assignInherit(pack);
+        e->addInheritableData(pack);
 
         m_sub = e->getSub();
         m_interfaces = e->getInterfaces();
 
-        assignProps(e->getProperties());
-        assignPoints(e->getPoints(), points);
-        assignPoints(e->getHiddenPoints(), hiddenPoints);
+        inheritProps(e->getProperties());
+        inheritPoints(e->getPoints(), points);
+        inheritPoints(e->getHiddenPoints(), hiddenPoints);
     }
 
-    assignProps(m_properties);
-    assignPoints(m_hiddenPoints, hiddenPoints);
-    assignPoints(m_points, points);
+    inheritProps(m_properties);
+    inheritPoints(m_hiddenPoints, hiddenPoints);
+    inheritPoints(m_points, points);
 
     m_properties = props;
     m_hiddenPoints = hiddenPoints;
     m_points = points;
 
-    m_isInherit = true;
+    m_isInherited = true;
 }
 
 ListConfProps ConfElement::getProperties() const
