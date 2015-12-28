@@ -49,7 +49,7 @@ public:
 private:
     bool loadPackageInfo();
     bool loadElements();
-    void assignInherits();
+    void addInheritableData();
 
 public:
     bool getSuccess() const;

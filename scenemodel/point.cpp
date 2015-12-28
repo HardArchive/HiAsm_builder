@@ -22,7 +22,6 @@ Point::Point(quintptr id_point, QObject *parent)
 
 Point::Point(const QJsonObject &object, QObject *parent)
     : QObject(parent)
-    , m_cgt(parent->property("cgt").value<PCodeGenTools>())
     , m_model(parent->property("model").value<PSceneModel>())
 {
     deserialize(object);
