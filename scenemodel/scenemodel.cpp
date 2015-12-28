@@ -14,9 +14,8 @@
 //Qt
 #include <QDebug>
 
-SceneModel::SceneModel(PackageManager &manager, QObject *parent)
+SceneModel::SceneModel(QObject *parent)
     : QObject(parent)
-    , m_manager(manager)
 {
 
 }
@@ -139,6 +138,27 @@ void SceneModel::deserialize(const QJsonDocument &doc)
     m_container = new Container(container, this);
 }
 
+quintptr SceneModel::genId()
+{
+    while (true) {
+        ++m_genId;
+        if (m_mapContainers.contains(m_genId))
+            continue;
+        if (m_mapElements.contains(m_genId))
+            continue;
+        if (m_mapProperties.contains(m_genId))
+            continue;
+        if (m_mapPoints.contains(m_genId))
+            continue;
+        if (m_mapValues.contains(m_genId))
+            continue;
+
+        break;
+    }
+
+    return m_genId;
+}
+
 PSceneModel SceneModel::getModel()
 {
     return this;
@@ -177,7 +197,7 @@ bool SceneModel::loadModel(const QString &filePath)
     return true;
 }
 
-bool SceneModel::loadFromSha(const QString &filePath)
+bool SceneModel::loadFromSha(const QString &filePath, PackageManager &manager)
 {
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
@@ -185,18 +205,19 @@ bool SceneModel::loadFromSha(const QString &filePath)
 
     //file.readAll();
 
-    const PPackage pack = m_manager.getPackage("delphi");
-    if (!pack)
+    m_package = manager.getPackage("delphi");
+    if (!m_package)
         return false;
 
-    const SharedConfElement conf = pack->getElementByName("MainForm");
-    if (!conf)
-        return false;
-
-    //m_container = new Container();
-    //m_container->
+    m_container = new Container(this);
+    m_container->addElement(new Element("MainForm", 2953706, 21, 105, m_container));
 
     return true;
+}
+
+PPackage SceneModel::getPackage()
+{
+    return m_package;
 }
 
 void SceneModel::addContainerToMap(PContainer id_sdk)

@@ -23,8 +23,8 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion(APP_VERSION);
 
     PackageManager manager;
-    SceneModel model(manager);
-    model.loadFromSha("intro.sha");
+    SceneModel model;
+    model.loadFromSha("intro.sha", manager);
 
     /*
     const QString codeGenFile = "CodeGen.dll";

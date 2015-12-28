@@ -21,8 +21,11 @@ private:
     //CGT
     PCodeGenTools m_cgt{};
 
-    //Package manager
-    PackageManager &m_manager;
+    //Model
+    quintptr m_genId = 1;
+
+    //Package
+    PPackage m_package;
 
     //Map
     MapContainers m_mapContainers;
@@ -59,7 +62,7 @@ private:
     Q_PROPERTY(PSceneModel model READ getModel)
 
 public:
-    explicit SceneModel(PackageManager &manager, QObject *parent = 0);
+    explicit SceneModel(QObject *parent = 0);
     virtual ~SceneModel();
 
 private:
@@ -74,11 +77,15 @@ public:
     PCodeGenTools getCgt();
 
     //Model
+    quintptr genId();
     PSceneModel getModel();
     void initFromCgt(PCodeGenTools cgt, quintptr idMainSDK);
     bool saveModel(const QString &filePath);
     bool loadModel(const QString &filePath);
-    bool loadFromSha(const QString &filePath);
+    bool loadFromSha(const QString &filePath, PackageManager &manager);
+
+    //Package
+    PPackage getPackage();
 
     //Map
     void addContainerToMap(PContainer id_sdk);
@@ -156,6 +163,7 @@ public:
 
     QString getCompiler() const;
     void setCompiler(const QString &compiler);
+
 };
 
 Q_DECLARE_METATYPE(PSceneModel)

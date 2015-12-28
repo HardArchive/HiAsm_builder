@@ -40,6 +40,8 @@ Package::Package(const QString &packagePath, QObject *parent)
         return;
     }
 
+    assignInherits();
+
     setSuccess(true);
 }
 
@@ -205,6 +207,13 @@ bool Package::loadElements()
     return true;
 }
 
+void Package::assignInherits()
+{
+    for (SharedConfElement &conf : m_confElements) {
+        conf->assignInherit(this);
+    }
+}
+
 bool Package::getSuccess() const
 {
     return m_success;
@@ -215,10 +224,12 @@ void Package::setSuccess(bool success)
     m_success = success;
 }
 
-const SharedConfElement Package::getElementByName(const QString &name)
+SharedConfElement Package::getElementByName(const QString &name)
 {
     for (const SharedConfElement conf :  m_confElements) {
-        //conf->getName();
+        if (QString::compare(conf->getName(), name, Qt::CaseInsensitive) == 0) {
+            return conf;
+        }
     }
 
     return SharedConfElement();

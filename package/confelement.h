@@ -26,6 +26,9 @@ private:
     QString m_name;
     //QIcon m_icon;
 
+    //Inherit
+    bool m_isInherit = false;
+
     //About
     QString m_version;
     QString m_author;
@@ -33,7 +36,7 @@ private:
 
     //Type
     QString m_class;
-    QString m_inherit;
+    QStringList m_inherit;
     QString m_sub;
     QString m_info;
     QString m_propIcon;
@@ -81,8 +84,8 @@ public:
     QString getClass() const;
     void setClass(const QString &nameClass);
 
-    QString getInherits() const;
-    void setInherits(const QString &inherit);
+    QStringList getInherits() const;
+    void setInherits(const QStringList &inherit);
 
     QString getSub() const;
     void setSub(const QString &sub);
@@ -105,6 +108,12 @@ public:
     QString getEditClass() const;
     void setEditClass(const QString &editClass);
 
+    //Inherits
+    void assignInherit(PPackage pack);
+
+    ListConfProps getProperties() const;
+    ListConfPoints getPoints() const;
+    ListConfPoints getHiddenPoints() const;
 };
 typedef QSharedPointer<ConfElement> SharedConfElement;
 typedef QList<SharedConfElement> ListConfElements;

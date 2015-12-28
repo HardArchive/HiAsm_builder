@@ -9,6 +9,23 @@
 //STL
 
 //Qt
+
+
+Element::Element(const QString &name, quintptr id_element, int X, int Y, QObject *parent)
+    : QObject(parent)
+    , m_id(id_element)
+    , m_posX(X)
+    , m_posY(Y)
+    , m_model(parent->property("model").value<PSceneModel>())
+{
+    m_model->addElementToMap(this);
+
+    PPackage package = m_model->getPackage();
+    const SharedConfElement conf = package->getElementByName(name);
+
+
+}
+
 Element::Element(quintptr id_element, QObject *parent)
     : QObject(parent)
     , m_id(id_element)
@@ -21,7 +38,6 @@ Element::Element(quintptr id_element, QObject *parent)
 
 Element::Element(const QJsonObject &object, QObject *parent)
     : QObject(parent)
-    , m_cgt(parent->property("cgt").value<PCodeGenTools>())
     , m_model(parent->property("model").value<PSceneModel>())
 {
     deserialize(object);
@@ -162,8 +178,8 @@ void Element::deserialize(const QJsonObject &object)
     for (const auto p : properties) {
         addProperty(new Property(p.toObject(), this));
     }
-    for(const auto p : points){
-       addPoint(new Point(p.toObject(), this));
+    for (const auto p : points) {
+        addPoint(new Point(p.toObject(), this));
     }
 }
 

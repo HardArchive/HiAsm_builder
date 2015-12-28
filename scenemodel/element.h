@@ -54,6 +54,7 @@ private:
     Q_PROPERTY(PCodeGenTools cgt READ getCgt)
 
 public:
+    explicit Element(const QString &name, quintptr id_element, int X, int Y,  QObject *parent);
     explicit Element(quintptr id_element, QObject *parent);
     explicit Element(const QJsonObject &object, QObject *parent);
 

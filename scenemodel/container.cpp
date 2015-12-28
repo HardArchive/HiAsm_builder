@@ -10,10 +10,10 @@
 
 Container::Container(QObject *parent)
     : QObject(parent)
-    , m_cgt(parent->property("cgt").value<PCodeGenTools>())
     , m_model(parent->property("model").value<PSceneModel>())
 {
-
+    m_id = m_model->genId();
+    m_model->addContainerToMap(this);
 }
 
 Container::Container(quintptr id_sdk, QObject *parent)
@@ -28,7 +28,6 @@ Container::Container(quintptr id_sdk, QObject *parent)
 
 Container::Container(const QJsonObject &object, QObject *parent)
     : QObject(parent)
-    , m_cgt(parent->property("cgt").value<PCodeGenTools>())
     , m_model(parent->property("model").value<PSceneModel>())
 {
     deserialize(object);

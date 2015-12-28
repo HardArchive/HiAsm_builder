@@ -49,12 +49,13 @@ public:
 private:
     bool loadPackageInfo();
     bool loadElements();
+    void assignInherits();
 
 public:
     bool getSuccess() const;
     void setSuccess(bool success);
 
     //Element
-    const SharedConfElement getElementByName(const QString &name);
+    SharedConfElement getElementByName(const QString &name);
 
 };

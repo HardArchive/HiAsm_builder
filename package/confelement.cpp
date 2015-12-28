@@ -1,5 +1,6 @@
 //Project
 #include "confelement.h"
+#include "package.h"
 #include "cgt/CGTShare.h"
 
 //STL
@@ -58,12 +59,12 @@ void ConfElement::setClass(const QString &nameClass)
     m_class = nameClass;
 }
 
-QString ConfElement::getInherits() const
+QStringList ConfElement::getInherits() const
 {
     return m_inherit;
 }
 
-void ConfElement::setInherits(const QString &inherit)
+void ConfElement::setInherits(const QStringList &inherit)
 {
     m_inherit = inherit;
 }
@@ -136,6 +137,77 @@ QString ConfElement::getEditClass() const
 void ConfElement::setEditClass(const QString &editClass)
 {
     m_editClass = editClass;
+}
+
+void ConfElement::assignInherit(PPackage pack)
+{
+    if (m_isInherit && !pack)
+        return;
+
+    ListConfProps props;
+    auto containsProp = [&props](const QString & name) {
+        for (const SharedConfProp &prop : props)
+            if (prop->name == name)
+                return true;
+
+        return false;
+    };
+    auto assignProps = [&props, containsProp](const ListConfProps & inheritProps) {
+        for (const SharedConfProp &prop : inheritProps)
+            if (!containsProp(prop->name))
+                props.append(prop);
+    };
+
+    auto containsPoint = [](const ListConfPoints & points, const QString & name) {
+        for (const SharedConfPoint &point : points)
+            if (point->name == name)
+                return true;
+        return false;
+    };
+    auto assignPoints = [containsPoint](const ListConfPoints & inheritPoints, ListConfPoints & points) {
+        for (const SharedConfPoint &point : inheritPoints)
+            if (!containsPoint(points, point->name))
+                points.append(point);
+    };
+
+    ListConfPoints hiddenPoints;
+    ListConfPoints points;
+    for (const QString &name : m_inherit) {
+        SharedConfElement e = pack->getElementByName(name);
+        e->assignInherit(pack);
+
+        m_sub = e->getSub();
+        m_interfaces = e->getInterfaces();
+
+        assignProps(e->getProperties());
+        assignPoints(e->getPoints(), points);
+        assignPoints(e->getHiddenPoints(), hiddenPoints);
+    }
+
+    assignProps(m_properties);
+    assignPoints(m_hiddenPoints, hiddenPoints);
+    assignPoints(m_points, points);
+
+    m_properties = props;
+    m_hiddenPoints = hiddenPoints;
+    m_points = points;
+
+    m_isInherit = true;
+}
+
+ListConfProps ConfElement::getProperties() const
+{
+    return m_properties;
+}
+
+ListConfPoints ConfElement::getPoints() const
+{
+    return m_points;
+}
+
+ListConfPoints ConfElement::getHiddenPoints() const
+{
+    return m_hiddenPoints;
 }
 
 ConfElement::ConfElement(const QString &pathConf)
@@ -251,7 +323,7 @@ void ConfElement::parseTypes(const QStringList &list)
         if (sec0 == QLatin1String("class")) {
             m_class = sec1;
         } else if (sec0 == QLatin1String("inherit")) {
-            m_inherit = sec1;
+            m_inherit = sec1.split(QLatin1Char(','), QString::SkipEmptyParts);
         } else if (sec0 == QLatin1String("sub")) {
             m_sub = sec1;
         } else if (sec0 == QLatin1String("info")) {
@@ -339,12 +411,14 @@ void ConfElement::parseProperties(const QStringList &list)
             if (i < 2) {
                 if (c == QLatin1Char('#')) {
                     ++countSharp;
+                    continue;
                 } else if (c == QLatin1Char('@')) {
                     makePoint = true;
+                    continue;
                 } else if (!makePoint && c == QLatin1Char('+')) {
                     activated = true;
+                    continue;
                 }
-                continue;
             }
 
             if (c == QLatin1Char('=')) {
