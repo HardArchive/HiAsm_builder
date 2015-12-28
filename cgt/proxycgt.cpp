@@ -12,10 +12,10 @@ namespace ProxyCgt
     //Дефайны
 #define EXPORT __stdcall
 #define PRINT_FUNC_INFO qInfo("  Call: %s", Q_FUNC_INFO);
-#define PRINT_RESULT(X) qInfo() << qUtf8Printable(QString("  Return: %1").arg(X));
+#define PRINT_RESULT(X) qInfo().noquote() << "  Return:" << X;
 
 #define id(X) QString("id(%1)").arg(X)
-#define str(X) QString("\"%1\"").arg(X)
+#define str(X) QString("\"%1\"").arg(QString::fromLocal8Bit(X))
 #define p(X) QString("p(%1)").arg(X)
 
     //Для хранения указателя на массив указателей на callback функции
