@@ -58,4 +58,4 @@ typedef QList<SharedCompilerInfo> ListCompilers;
 
 class Package;
 typedef Package *PPackage;
-typedef QVector<PPackage> Packages;
+typedef QMap<QString, PPackage> Packages;

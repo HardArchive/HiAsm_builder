@@ -23,9 +23,10 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationVersion(APP_VERSION);
 
     PackageManager manager;
+    SceneModel model(manager);
+    model.loadFromSha("intro.sha");
 
     /*
-
     const QString codeGenFile = "CodeGen.dll";
     const QString makeExe = "make_exe.dll";
     const QString packagePath = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "packages/delphi/");

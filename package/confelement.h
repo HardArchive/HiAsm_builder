@@ -33,7 +33,7 @@ private:
 
     //Type
     QString m_class;
-    QStringList m_inherits;
+    QString m_inherit;
     QString m_sub;
     QString m_info;
     QString m_propIcon;
@@ -64,6 +64,46 @@ private:
     void parseTypes(const QStringList &list);
     void parseProperties(const QStringList &list);
     void parsePoints(const QStringList &list);
+
+public:
+    QString getName() const;
+    void setName(const QString &name);
+
+    QString getVersion() const;
+    void setVersion(const QString &version);
+
+    QString getAuthor() const;
+    void setAuthor(const QString &author);
+
+    QString getMail() const;
+    void setMail(const QString &mail);
+
+    QString getClass() const;
+    void setClass(const QString &nameClass);
+
+    QString getInherits() const;
+    void setInherits(const QString &inherit);
+
+    QString getSub() const;
+    void setSub(const QString &sub);
+
+    QString getInfo() const;
+    void setInfo(const QString &info);
+
+    QString getPropIcon() const;
+    void setPropIcon(const QString &propIcon);
+
+    QString getView() const;
+    void setView(const QString &view);
+
+    QString getTab() const;
+    void setTab(const QString &tab);
+
+    QString getInterfaces() const;
+    void setInterfaces(const QString &interfaces);
+
+    QString getEditClass() const;
+    void setEditClass(const QString &editClass);
 
 };
 typedef QSharedPointer<ConfElement> SharedConfElement;

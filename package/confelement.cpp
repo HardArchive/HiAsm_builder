@@ -8,6 +8,136 @@
 
 //Qt
 
+QString ConfElement::getName() const
+{
+    return m_name;
+}
+
+void ConfElement::setName(const QString &name)
+{
+    m_name = name;
+}
+
+QString ConfElement::getVersion() const
+{
+    return m_version;
+}
+
+void ConfElement::setVersion(const QString &version)
+{
+    m_version = version;
+}
+
+QString ConfElement::getAuthor() const
+{
+    return m_author;
+}
+
+void ConfElement::setAuthor(const QString &author)
+{
+    m_author = author;
+}
+
+QString ConfElement::getMail() const
+{
+    return m_mail;
+}
+
+void ConfElement::setMail(const QString &mail)
+{
+    m_mail = mail;
+}
+
+QString ConfElement::getClass() const
+{
+    return m_class;
+}
+
+void ConfElement::setClass(const QString &nameClass)
+{
+    m_class = nameClass;
+}
+
+QString ConfElement::getInherits() const
+{
+    return m_inherit;
+}
+
+void ConfElement::setInherits(const QString &inherit)
+{
+    m_inherit = inherit;
+}
+
+QString ConfElement::getSub() const
+{
+    return m_sub;
+}
+
+void ConfElement::setSub(const QString &sub)
+{
+    m_sub = sub;
+}
+
+QString ConfElement::getInfo() const
+{
+    return m_info;
+}
+
+void ConfElement::setInfo(const QString &info)
+{
+    m_info = info;
+}
+
+QString ConfElement::getPropIcon() const
+{
+    return m_propIcon;
+}
+
+void ConfElement::setPropIcon(const QString &propIcon)
+{
+    m_propIcon = propIcon;
+}
+
+QString ConfElement::getView() const
+{
+    return m_view;
+}
+
+void ConfElement::setView(const QString &view)
+{
+    m_view = view;
+}
+
+QString ConfElement::getTab() const
+{
+    return m_tab;
+}
+
+void ConfElement::setTab(const QString &tab)
+{
+    m_tab = tab;
+}
+
+QString ConfElement::getInterfaces() const
+{
+    return m_interfaces;
+}
+
+void ConfElement::setInterfaces(const QString &interfaces)
+{
+    m_interfaces = interfaces;
+}
+
+QString ConfElement::getEditClass() const
+{
+    return m_editClass;
+}
+
+void ConfElement::setEditClass(const QString &editClass)
+{
+    m_editClass = editClass;
+}
+
 ConfElement::ConfElement(const QString &pathConf)
     : m_pathConf(pathConf)
 {
@@ -121,7 +251,7 @@ void ConfElement::parseTypes(const QStringList &list)
         if (sec0 == QLatin1String("class")) {
             m_class = sec1;
         } else if (sec0 == QLatin1String("inherit")) {
-            m_inherits = sec1.split(QLatin1Char(','), QString::SkipEmptyParts);
+            m_inherit = sec1;
         } else if (sec0 == QLatin1String("sub")) {
             m_sub = sec1;
         } else if (sec0 == QLatin1String("info")) {

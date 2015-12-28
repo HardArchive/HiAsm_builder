@@ -44,7 +44,7 @@ private:
     ListConfElements m_confElements; //Массив компиляторов
 
 public:
-    explicit Package(const QString &packagePath, QObject *parent);
+    explicit Package(const QString &packagePath, QObject *parent = 0);
 
 private:
     bool loadPackageInfo();
@@ -53,5 +53,8 @@ private:
 public:
     bool getSuccess() const;
     void setSuccess(bool success);
+
+    //Element
+    const SharedConfElement getElementByName(const QString &name);
 
 };

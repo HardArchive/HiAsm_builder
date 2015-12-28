@@ -8,6 +8,14 @@
 
 //Qt
 
+Container::Container(QObject *parent)
+    : QObject(parent)
+    , m_cgt(parent->property("cgt").value<PCodeGenTools>())
+    , m_model(parent->property("model").value<PSceneModel>())
+{
+
+}
+
 Container::Container(quintptr id_sdk, QObject *parent)
     : QObject(parent)
     , m_id(id_sdk)
@@ -63,8 +71,8 @@ void Container::deserialize(const QJsonObject &object)
     m_name = data["name"].toString();
 
     const auto elements = object["Elements"].toArray();
-    for(const auto e : elements){
-       addElement(new Element(e.toObject(), this));
+    for (const auto e : elements) {
+        addElement(new Element(e.toObject(), this));
     }
 }
 

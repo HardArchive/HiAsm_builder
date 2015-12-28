@@ -9,28 +9,25 @@
 
 //Qt
 #include <QtCore>
-#include <QDebug>
 
 PackageManager::PackageManager(QObject *parent)
     : QObject(parent)
 {
-    initPackages();
+    m_pathPackages = QDir::currentPath() + QDir::separator() + m_packagesDir;
 }
 
-void PackageManager::initPackages()
+PPackage PackageManager::getPackage(const QString &namePack)
 {
-    QDir packagesDir(m_packagesDir);
-    if (!packagesDir.exists()) {
-        return;
-    }
+    if (m_packages.contains(namePack))
+        return m_packages[namePack];
 
-    packagesDir.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-    for (const QFileInfo &packInfo : packagesDir.entryInfoList()) {
-        auto pack = new Package(packInfo.absoluteFilePath(), this);
-        if (pack->getSuccess()) {
-            m_packages.append(pack);
-        } else {
-            delete pack;
-        }
+    const QString pathPackage = m_pathPackages + QDir::separator() + namePack;
+    PPackage pack = new Package(pathPackage, this);
+    if (pack->getSuccess()) {
+        m_packages.insert(namePack, pack);
+        return pack;
+    } else {
+        delete pack;
+        return nullptr;
     }
 }

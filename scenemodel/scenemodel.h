@@ -4,6 +4,7 @@
 #include "types.h"
 #include "value.h"
 #include "cgt/CGTShare.h"
+#include "package/packagemanager.h"
 
 //STL
 
@@ -19,6 +20,9 @@ class SceneModel: public QObject
 private:
     //CGT
     PCodeGenTools m_cgt{};
+
+    //Package manager
+    PackageManager &m_manager;
 
     //Map
     MapContainers m_mapContainers;
@@ -55,7 +59,7 @@ private:
     Q_PROPERTY(PSceneModel model READ getModel)
 
 public:
-    explicit SceneModel(QObject *parent = 0);
+    explicit SceneModel(PackageManager &manager, QObject *parent = 0);
     virtual ~SceneModel();
 
 private:
@@ -74,6 +78,7 @@ public:
     void initFromCgt(PCodeGenTools cgt, quintptr idMainSDK);
     bool saveModel(const QString &filePath);
     bool loadModel(const QString &filePath);
+    bool loadFromSha(const QString &filePath);
 
     //Map
     void addContainerToMap(PContainer id_sdk);

@@ -10,7 +10,7 @@
 #include <QDir>
 #include <QJsonDocument>
 
-Package::Package(const QString &packagePath, QObject *parent = 0)
+Package::Package(const QString &packagePath, QObject *parent)
     : QObject(parent)
     , m_packagePath(packagePath)
 {
@@ -213,5 +213,14 @@ bool Package::getSuccess() const
 void Package::setSuccess(bool success)
 {
     m_success = success;
+}
+
+const SharedConfElement Package::getElementByName(const QString &name)
+{
+    for (const SharedConfElement conf :  m_confElements) {
+        //conf->getName();
+    }
+
+    return SharedConfElement();
 }
 
