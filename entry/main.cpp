@@ -25,6 +25,7 @@ int main(int argc, char *argv[])
     PackageManager manager;
     SceneModel model;
     model.loadFromSha("intro.sha", manager);
+    //model.loadModel("test.json");
 
     /*
     const QString codeGenFile = "CodeGen.dll";

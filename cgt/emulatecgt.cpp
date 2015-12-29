@@ -81,11 +81,7 @@ namespace EmulateCgt
         if (!e)
             return false;
 
-        PProperty p = e->getPropertyByIndex(index);
-        if (!p)
-            return false;
-
-        return p->getIsDefProp();
+        return e->getIsDefPropByIndex(index);
     }
 
     //ru Присваиваем элементу уникальное имя и возвращаем ID этого элемента.

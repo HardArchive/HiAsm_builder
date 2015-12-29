@@ -5,6 +5,7 @@
 #include "value.h"
 #include "valuetypes.h"
 #include "cgt/CGTShare.h"
+#include "package/types.h"
 
 //STL
 
@@ -19,9 +20,8 @@ class Property: public QObject
 private:
     //Self
     quintptr m_id{};
-    QString m_name;
     DataType m_type{};
-    bool m_isDefProp{};
+    QString m_name;
 
     //CGT
     PCodeGenTools m_cgt{};
@@ -37,6 +37,7 @@ private:
     Q_PROPERTY(PCodeGenTools cgt READ getCgt)
 
 public:
+    explicit Property(const SharedConfProp &conf, QObject *parent);
     explicit Property(quintptr id_prop, QObject *parent);
     explicit Property(const QJsonObject &object, QObject *parent);
     explicit Property(quintptr id = 0,
@@ -46,6 +47,7 @@ public:
 
 private:
     void collectingData();
+    void loadConf(const SharedConfProp &conf);
 
 public:
     //Serialize
@@ -60,9 +62,6 @@ public:
 
     void setType(DataType type);
     DataType getType() const;
-
-    void setIsDefProp(bool value);
-    bool getIsDefProp() const;
 
     //Value
     void setValue(quintptr id = 0,

@@ -49,7 +49,7 @@ void ConfElement::setMail(const QString &mail)
     m_mail = mail;
 }
 
-QString ConfElement::getClass() const
+QString ConfElement::getClassName() const
 {
     return m_class;
 }
@@ -59,12 +59,12 @@ void ConfElement::setClass(const QString &nameClass)
     m_class = nameClass;
 }
 
-QStringList ConfElement::getInherits() const
+QStringList ConfElement::getInherit() const
 {
     return m_inherit;
 }
 
-void ConfElement::setInherits(const QStringList &inherit)
+void ConfElement::setInherit(const QStringList &inherit)
 {
     m_inherit = inherit;
 }
@@ -119,14 +119,14 @@ void ConfElement::setTab(const QString &tab)
     m_tab = tab;
 }
 
-QString ConfElement::getInterfaces() const
+QString ConfElement::getInterface() const
 {
-    return m_interfaces;
+    return m_interface;
 }
 
-void ConfElement::setInterfaces(const QString &interfaces)
+void ConfElement::setInterface(const QString &interface)
 {
-    m_interfaces = interfaces;
+    m_interface = interface;
 }
 
 QString ConfElement::getEditClass() const
@@ -177,7 +177,7 @@ void ConfElement::addInheritableData(PPackage pack)
         e->addInheritableData(pack);
 
         m_sub = e->getSub();
-        m_interfaces = e->getInterfaces();
+        m_interface = e->getInterface();
 
         inheritProps(e->getProperties());
         inheritPoints(e->getPoints(), points);
@@ -335,7 +335,7 @@ void ConfElement::parseTypes(const QStringList &list)
         } else if (sec0 == QLatin1String("tab")) {
             m_tab = sec1;
         } else if (sec0 == QLatin1String("interfaces")) {
-            m_interfaces = sec1;
+            m_interface = sec1;
         }
     }
 }

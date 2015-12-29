@@ -42,7 +42,7 @@ private:
     QString m_propIcon;
     QString m_view;
     QString m_tab;
-    QString m_interfaces;
+    QString m_interface;
 
     //Edit
     QString m_editClass;
@@ -81,11 +81,11 @@ public:
     QString getMail() const;
     void setMail(const QString &mail);
 
-    QString getClass() const;
+    QString getClassName() const;
     void setClass(const QString &nameClass);
 
-    QStringList getInherits() const;
-    void setInherits(const QStringList &inherit);
+    QStringList getInherit() const;
+    void setInherit(const QStringList &inherit);
 
     QString getSub() const;
     void setSub(const QString &sub);
@@ -102,8 +102,8 @@ public:
     QString getTab() const;
     void setTab(const QString &tab);
 
-    QString getInterfaces() const;
-    void setInterfaces(const QString &interfaces);
+    QString getInterface() const;
+    void setInterface(const QString &interface);
 
     QString getEditClass() const;
     void setEditClass(const QString &editClass);

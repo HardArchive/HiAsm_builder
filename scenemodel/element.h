@@ -3,6 +3,7 @@
 //Project
 #include "types.h"
 #include "cgt/CGTShare.h"
+#include "package/confelement.h"
 
 //STL
 
@@ -19,26 +20,23 @@ private:
     //Self
     quintptr m_id{};
     quintptr m_userData{};
-    ElementClass m_classIndex{};
     ElementFlgs m_flags{};
-    int m_group{};
     bool m_linkIs{};
     quintptr m_linkMain{};
+    QString m_codeName;
     int m_posX{};
     int m_posY{};
     int m_sizeW{};
     int m_sizeH{};
-    QString m_className;
-    QString m_codeName;
-    QString m_interface;
-    QString m_inherit;
-    QString m_infSub;
 
     //CGT
     PCodeGenTools m_cgt{};
 
     //Model
     PSceneModel m_model{};
+
+    //Conf
+    SharedConfElement m_conf;
 
     //Container
     Containers m_containers;
@@ -54,12 +52,13 @@ private:
     Q_PROPERTY(PCodeGenTools cgt READ getCgt)
 
 public:
-    explicit Element(const QString &name, quintptr id_element, int X, int Y,  QObject *parent);
+    explicit Element(const SharedConfElement &conf, quintptr id_element, QObject *parent);
     explicit Element(quintptr id_element, QObject *parent);
     explicit Element(const QJsonObject &object, QObject *parent);
 
 private:
     void collectingData();
+    void loadConf();
 
 public:
     //Serialize
@@ -70,17 +69,15 @@ public:
     quintptr getId() const;
     PContainer getParent() const;
 
+    QString getName() const;
+
     void setUserData(quintptr userData);
     quintptr getUserData() const;
 
-    void setClassIndex(ElementClass classIndex);
     ElementClass getClassIndex();
 
     void setFlags(const ElementFlgs &flags);
     ElementFlags getFlags() const;
-
-    void setGroup(int group);
-    int getGroup() const;
 
     void setLinkIs(bool linkIs);
     bool getLinkIs() const;
@@ -100,19 +97,15 @@ public:
     void setSizeH(int sizeH);
     int getSizeH() const;
 
-    void setClassName(const QString &className);
     QString getClassName() const;
 
     void setCodeName(const QString &name);
     QString getCodeName() const;
 
-    void setInterface(const QString &interface);
     QString getInterface() const;
 
-    void setInherit(const QString &inherit);
     QString getInherit() const;
 
-    void setInfSub(const QString &infSub);
     QString getInfSub() const;
 
     //CGT
@@ -148,4 +141,6 @@ public:
     quintptr getIdPropertyByName(const QString &name) const;
     PProperty addProperty(PProperty property);
     void removeProperty(uint index);
+    bool getIsDefPropByIndex(uint index);
+
 };

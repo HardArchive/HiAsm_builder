@@ -210,7 +210,12 @@ bool SceneModel::loadFromSha(const QString &filePath, PackageManager &manager)
         return false;
 
     m_container = new Container(this);
-    m_container->addElement(new Element("MainForm", 2953706, 21, 105, m_container));
+
+    SharedConfElement conf = m_package->getElementByName("MainForm");
+    if (!conf)
+        return false;
+
+    m_container->addElement(new Element(conf, 2953706, m_container));
 
     return true;
 }
