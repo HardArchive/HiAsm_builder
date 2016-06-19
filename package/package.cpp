@@ -59,7 +59,7 @@ bool Package::loadPackageInfo()
     if (!info.isNull()) {
         const QJsonObject infoPackage = info.object();
         
-        //!ru Получаем информацию о проекте
+        //!ru Получаем информацию о пакете
         
         //ru Название пакета - обязательно заполнять.
         if (infoPackage.contains("name")) {

@@ -17,7 +17,6 @@
 SceneModel::SceneModel(QObject *parent)
     : QObject(parent)
 {
-
 }
 
 SceneModel::~SceneModel()
@@ -74,11 +73,11 @@ void SceneModel::collectingData(quintptr id_sdk)
     m_cgt->GetParam(PARAM_PROJECT_NAME, buf.data());
     m_projectName = QString::fromLocal8Bit(buf);
 
-    uint tmpW[1] = {reinterpret_cast<uint>(id_element)};
+    uint tmpW[1] = { reinterpret_cast<uint>(id_element) };
     m_cgt->GetParam(PARAM_SDE_WIDTH, tmpW);
     m_sdeWidth = tmpW[0];
 
-    uint tmpH[1] = {reinterpret_cast<uint>(id_element)};
+    uint tmpH[1] = { reinterpret_cast<uint>(id_element) };
     m_cgt->GetParam(PARAM_SDE_HEIGHT, tmpH);
     m_sdeHeight = tmpH[0];
 
@@ -124,7 +123,8 @@ void SceneModel::deserialize(const QJsonDocument &doc)
     m_codePath = cgtParams["CODE_PATH"].toString();
     m_debugMode = cgtParams["DEBUG_MODE"].toInt();
     m_debugServerPort = cgtParams["DEBUG_SERVER_PORT"].toInt();
-    m_debugClientPort = cgtParams["DEBUG_CLIENT_PORT"].toInt();;
+    m_debugClientPort = cgtParams["DEBUG_CLIENT_PORT"].toInt();
+    ;
     m_projectPath = cgtParams["PROJECT_PATH"].toString();
     m_hiasmVersion = cgtParams["HIASM_VERSION"].toString();
     m_userName = cgtParams["USER_NAME"].toString();
@@ -206,8 +206,10 @@ bool SceneModel::loadFromSha(const QString &filePath, PackageManager &manager)
     //file.readAll();
 
     m_package = manager.getPackage("delphi");
-    if (!m_package)
+    if (!m_package) {
+        qWarning("Failed to load package \"%s\".", "delphi");
         return false;
+    }
 
     m_container = new Container(this);
     m_container->addElement(new Element("MainForm", 2953706, 21, 105, m_container));
@@ -448,7 +450,7 @@ bool SceneModel::resIsEmpty() const
 
 void SceneModel::getCgtParam(CgtParams index, void *buf) const
 {
-    auto writeString = [buf](const QString & str) {
+    auto writeString = [buf](const QString &str) {
         strcpy(reinterpret_cast<char *>(buf), str.toStdString().c_str());
     };
     auto writeInt = [buf](int value) {
@@ -456,7 +458,7 @@ void SceneModel::getCgtParam(CgtParams index, void *buf) const
     };
 
     switch (index) {
-    case PARAM_CODE_PATH :
+    case PARAM_CODE_PATH:
         writeString(m_codePath);
         break;
     case PARAM_DEBUG_MODE:

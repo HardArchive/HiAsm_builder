@@ -1,6 +1,7 @@
 //Project
 #include "cgt/cgt.h"
 #include "cgt/emulatecgt.h"
+#include "cgt/proxycgt.h"
 #include "scenemodel/scenemodel.h"
 #include "package/packagemanager.h"
 #include "logger.h"
@@ -24,9 +25,8 @@ int main(int argc, char *argv[])
 
     PackageManager manager;
     SceneModel model;
-    model.loadFromSha("intro.sha", manager);
+    model.loadFromSha("test.sha", manager);
 
-    /*
     const QString codeGenFile = "CodeGen.dll";
     const QString makeExe = "make_exe.dll";
     const QString packagePath = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "packages/delphi/");
@@ -67,13 +67,13 @@ int main(int argc, char *argv[])
     buildProcessProcLib = reinterpret_cast<t_buildProcessProc>(libCodeGen.resolve("buildProcessProc"));
     checkVersionProcLib = reinterpret_cast<t_checkVersionProc>(libCodeGen.resolve("CheckVersionProc"));
 
-    const QString modelFilePath = "test.json";
-    qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
-    SceneModel model;
-    if (!model.loadModel(modelFilePath)) {
-        qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
-        exit(0);
-    }
+    //const QString modelFilePath = "test.json";
+    //qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
+    ////SceneModel model;
+    //if (!model.loadModel(modelFilePath)) {
+    //    qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
+    //    exit(0);
+    //}
     QString fullPathProjectFile = codePath +  model.getProjectName() + ".dpr";
 
     qInfo("Set params for model.");
@@ -83,8 +83,9 @@ int main(int argc, char *argv[])
     qInfo("Initialize EmulateCgt and TBuildProcessRec.");
     EmulateCgt::setSceneModel(&model);
 
+    ProxyCgt::setProxiedCgt(EmulateCgt::getCgt());
     qInfo("Call func buildProcessProc from CodeGen.dll...");
-    TBuildProcessRec rec(EmulateCgt::getCgt(), model.getIdRootContainer());
+    TBuildProcessRec rec(ProxyCgt::getCgt(), model.getIdRootContainer());
     CgResult resultBuild = buildProcessProcLib(rec);
     if (resultBuild != CG_SUCCESS) {
         qCritical() << "Error build project: buildProcessProc return" << CgResultMap[resultBuild];
@@ -122,7 +123,7 @@ int main(int argc, char *argv[])
 
     qInfo("Delete resources.");
     model.deleteResources();
-    */
+    //*/
 
     return a.exec();
 }

@@ -2,7 +2,6 @@
 #include "packagemanager.h"
 #include "package.h"
 
-
 //STL
 
 //Native
@@ -21,8 +20,7 @@ PPackage PackageManager::getPackage(const QString &namePack)
     if (m_packages.contains(namePack))
         return m_packages[namePack];
 
-    const QString pathPackage = m_pathPackages + QDir::separator() + namePack;
-    PPackage pack = new Package(pathPackage, this);
+    PPackage pack = new Package(m_pathPackages + QDir::separator() + namePack);
     if (pack->getSuccess()) {
         m_packages.insert(namePack, pack);
         return pack;
