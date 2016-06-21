@@ -27,14 +27,11 @@ DEFINES += APP_COMPANY=\"\\\"$$QMAKE_TARGET_COMPANY\\\"\" \
            APP_PRODUCT=\"\\\"$$QMAKE_TARGET_PRODUCT\\\"\" \
            APP_VERSION=\"\\\"$$VERSION\\\"\"
 
-SOURCES += $$files("cgt/*.cpp", true)
-HEADERS += $$files("cgt/*.h", true)
-SOURCES += $$files("scenemodel/*.cpp", true)
-HEADERS += $$files("scenemodel/*.h", true)
-SOURCES += $$files("entry/*.cpp", true)
-HEADERS += $$files("entry/*.h", true)
-SOURCES += $$files("package/*.cpp", true)
-HEADERS += $$files("package/*.h", true)
+SOURCES += $$files($$PWD/"entry/*.cpp", true)
+HEADERS += $$files($$PWD/"entry/*.h", true)
+
+#Подключаем HiAsm_Interface
+include(../HiAsm_Interface/HiAsm_Interface.pri)
 
 #Подключаем логгер
 include(logger/logger.pri)
