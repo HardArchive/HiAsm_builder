@@ -32,6 +32,3 @@ HEADERS += $$files($$PWD/"entry/*.h", true)
 
 #Подключаем HiAsm_Interface
 include(../HiAsm_Interface/HiAsm_Interface.pri)
-
-#Подключаем логгер
-include(logger/logger.pri)
