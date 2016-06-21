@@ -194,7 +194,9 @@ bool SceneModel::loadModel(const QString& filePath)
     if (!file.open(QIODevice::ReadOnly))
         return false;
 
-    deserialize(QJsonDocument::fromJson(file.readAll()));
+    auto dataF = file.readAll();
+    auto json = QJsonDocument::fromJson(dataF);
+    deserialize(json);
     return true;
 }
 
