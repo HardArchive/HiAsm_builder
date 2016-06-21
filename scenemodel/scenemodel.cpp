@@ -1,10 +1,10 @@
 ﻿//Project
 #include "scenemodel.h"
+#include "cgt/cgt.h"
 #include "container.h"
 #include "element.h"
 #include "point.h"
 #include "property.h"
-#include "cgt/cgt.h"
 
 //STL
 
@@ -14,8 +14,9 @@
 //Qt
 #include <QDebug>
 
-SceneModel::SceneModel(QObject *parent)
+SceneModel::SceneModel(PPackageManager package, QObject* parent)
     : QObject(parent)
+    , m_packageManager(package)
 {
 }
 
@@ -35,7 +36,7 @@ void SceneModel::collectingData(quintptr id_sdk)
     QByteArray buf("", 512);
 
     buf.fill('\0');
-    reinterpret_cast<quintptr *>(buf.data())[0] = id_element; //-V206
+    reinterpret_cast<quintptr*>(buf.data())[0] = id_element; //-V206
     m_cgt->GetParam(PARAM_CODE_PATH, buf.data());
     m_codePath = QString::fromLocal8Bit(buf);
 
@@ -49,12 +50,12 @@ void SceneModel::collectingData(quintptr id_sdk)
     m_debugClientPort = iBuf;
 
     buf.fill('\0');
-    reinterpret_cast<quintptr *>(buf.data())[0] = id_element; //-V206
+    reinterpret_cast<quintptr*>(buf.data())[0] = id_element; //-V206
     m_cgt->GetParam(PARAM_PROJECT_PATH, buf.data());
     m_projectPath = QString::fromLocal8Bit(buf);
 
     const char f[] = "%mj.%mn.%bl";
-    char *tmpBuf = new char[strlen(f) + 1];
+    char* tmpBuf = new char[strlen(f) + 1];
     strcpy(tmpBuf, f);
     m_cgt->GetParam(PARAM_HIASM_VERSION, tmpBuf);
     m_hiasmVersion = QString::fromLatin1(tmpBuf);
@@ -69,7 +70,7 @@ void SceneModel::collectingData(quintptr id_sdk)
     m_userMail = QString::fromLocal8Bit(buf);
 
     buf.fill('\0');
-    reinterpret_cast<quintptr *>(buf.data())[0] = id_element; //-V206
+    reinterpret_cast<quintptr*>(buf.data())[0] = id_element; //-V206
     m_cgt->GetParam(PARAM_PROJECT_NAME, buf.data());
     m_projectName = QString::fromLocal8Bit(buf);
 
@@ -82,7 +83,7 @@ void SceneModel::collectingData(quintptr id_sdk)
     m_sdeHeight = tmpH[0];
 
     buf.fill('\0');
-    reinterpret_cast<quintptr *>(buf.data())[0] = id_element; //-V206
+    reinterpret_cast<quintptr*>(buf.data())[0] = id_element; //-V206
     m_cgt->GetParam(PARAM_COMPILER, buf.data());
     m_compiler = QString::fromLocal8Bit(buf);
 }
@@ -115,7 +116,7 @@ PCodeGenTools SceneModel::getCgt()
     return m_cgt;
 }
 
-void SceneModel::deserialize(const QJsonDocument &doc)
+void SceneModel::deserialize(const QJsonDocument& doc)
 {
     const QJsonObject model = doc.object();
 
@@ -175,7 +176,7 @@ void SceneModel::initFromCgt(PCodeGenTools cgt, quintptr idMainSDK)
     m_container = new Container(idMainSDK, this);
 }
 
-bool SceneModel::saveModel(const QString &filePath)
+bool SceneModel::saveModel(const QString& filePath)
 {
     QJsonDocument doc = serialize();
     QFile file(filePath);
@@ -187,7 +188,7 @@ bool SceneModel::saveModel(const QString &filePath)
     return true;
 }
 
-bool SceneModel::loadModel(const QString &filePath)
+bool SceneModel::loadModel(const QString& filePath)
 {
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
@@ -197,7 +198,7 @@ bool SceneModel::loadModel(const QString &filePath)
     return true;
 }
 
-bool SceneModel::loadFromSha(const QString &filePath, PackageManager &manager)
+bool SceneModel::loadFromSha(const QString& filePath)
 {
     QFile file(filePath);
     if (!file.open(QIODevice::ReadOnly))
@@ -205,11 +206,7 @@ bool SceneModel::loadFromSha(const QString &filePath, PackageManager &manager)
 
     //file.readAll();
 
-    m_package = manager.getPackage("delphi");
-    if (!m_package) {
-        qWarning("Failed to load package \"%s\".", "delphi");
-        return false;
-    }
+    loadPackage("delphi");
 
     m_container = new Container(this);
     m_container->addElement(new Element("MainForm", 2953706, 21, 105, m_container));
@@ -217,9 +214,25 @@ bool SceneModel::loadFromSha(const QString &filePath, PackageManager &manager)
     return true;
 }
 
+void SceneModel::setPackage(PPackage package)
+{
+    m_package = package;
+}
+
 PPackage SceneModel::getPackage()
 {
     return m_package;
+}
+
+bool SceneModel::loadPackage(const QString& name)
+{
+    m_package = m_packageManager->getPackage(name);
+    if (!m_package) {
+        qWarning("Failed to load package \"%s\".", qUtf8Printable(name));
+        return false;
+    }
+
+    return true;
 }
 
 void SceneModel::addContainerToMap(PContainer id_sdk)
@@ -310,7 +323,7 @@ PValue SceneModel::getValueById(quintptr id_value) const
     return m_mapValues[id_value];
 }
 
-const char *SceneModel::addStreamRes(quintptr id_prop)
+const char* SceneModel::addStreamRes(quintptr id_prop)
 {
     PProperty p = getPropertyById(id_prop);
     if (!p)
@@ -373,7 +386,7 @@ const char *SceneModel::addStreamRes(quintptr id_prop)
     return fcgt::strToCString(fileNameRes);
 }
 
-const char *SceneModel::addStringRes(const QString &str)
+const char* SceneModel::addStringRes(const QString& str)
 {
     if (str.isEmpty())
         return nullptr;
@@ -399,7 +412,7 @@ const char *SceneModel::addStringRes(const QString &str)
 }
 void SceneModel::deleteResources()
 {
-    for (const auto &filePath : m_resourcesToDelete) {
+    for (const auto& filePath : m_resourcesToDelete) {
         QFile::remove(filePath);
     }
     m_resourcesToDelete.clear();
@@ -421,7 +434,7 @@ void SceneModel::compileResources()
     file.open(QIODevice::WriteOnly);
     QTextStream write(&file);
 
-    for (const auto &filePath : m_resourcesForCompile.keys()) {
+    for (const auto& filePath : m_resourcesForCompile.keys()) {
         QFileInfo file(filePath);
 
         write << QString("%1 %2 %3\r\n").arg(file.baseName()).arg(m_resourcesForCompile[filePath]).arg(filePath);
@@ -437,7 +450,7 @@ void SceneModel::compileResources()
     addResList(resFilePath);
 }
 
-int SceneModel::addResList(const QString &filePath)
+int SceneModel::addResList(const QString& filePath)
 {
     m_resourcesToDelete.insert(filePath);
     return 0;
@@ -448,13 +461,13 @@ bool SceneModel::resIsEmpty() const
     return m_resourcesToDelete.isEmpty();
 }
 
-void SceneModel::getCgtParam(CgtParams index, void *buf) const
+void SceneModel::getCgtParam(CgtParams index, void* buf) const
 {
-    auto writeString = [buf](const QString &str) {
-        strcpy(reinterpret_cast<char *>(buf), str.toStdString().c_str());
+    auto writeString = [buf](const QString& str) {
+        strcpy(reinterpret_cast<char*>(buf), str.toStdString().c_str());
     };
     auto writeInt = [buf](int value) {
-        *reinterpret_cast<int *>(buf) = value; //-V206
+        *reinterpret_cast<int*>(buf) = value; //-V206
     };
 
     switch (index) {
@@ -562,7 +575,7 @@ QString SceneModel::getCodePath() const
     return m_codePath;
 }
 
-void SceneModel::setCodePath(const QString &codePath)
+void SceneModel::setCodePath(const QString& codePath)
 {
     m_codePath = codePath;
 }
@@ -572,7 +585,7 @@ QString SceneModel::getProjectPath() const
     return m_projectPath;
 }
 
-void SceneModel::setProjectPath(const QString &projectPath)
+void SceneModel::setProjectPath(const QString& projectPath)
 {
     m_projectPath = projectPath;
 }
@@ -582,7 +595,7 @@ QString SceneModel::getHiasmVersion() const
     return m_hiasmVersion;
 }
 
-void SceneModel::setHiasmVersion(const QString &hiasmVersion)
+void SceneModel::setHiasmVersion(const QString& hiasmVersion)
 {
     m_hiasmVersion = hiasmVersion;
 }
@@ -592,7 +605,7 @@ QString SceneModel::getUserName() const
     return m_userName;
 }
 
-void SceneModel::setUserName(const QString &userName)
+void SceneModel::setUserName(const QString& userName)
 {
     m_userName = userName;
 }
@@ -602,7 +615,7 @@ QString SceneModel::getUserMail() const
     return m_userMail;
 }
 
-void SceneModel::setUserMail(const QString &userMail)
+void SceneModel::setUserMail(const QString& userMail)
 {
     m_userMail = userMail;
 }
@@ -612,7 +625,7 @@ QString SceneModel::getProjectName() const
     return m_projectName;
 }
 
-void SceneModel::setProjectName(const QString &projectName)
+void SceneModel::setProjectName(const QString& projectName)
 {
     m_projectName = projectName;
 }
@@ -622,7 +635,7 @@ QString SceneModel::getCompiler() const
     return m_compiler;
 }
 
-void SceneModel::setCompiler(const QString &compiler)
+void SceneModel::setCompiler(const QString& compiler)
 {
     m_compiler = compiler;
 }

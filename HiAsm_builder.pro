@@ -8,7 +8,7 @@ CONFIG += console
 CONFIG -= app_bundle
 
 #ru Тестовый каталог
-DESTDIR += "D:/dev/Qt/MainProjects/HiAsm_builder/test"
+DESTDIR += "test"
 TEMPLATE = app
 
 #Информация о приложении

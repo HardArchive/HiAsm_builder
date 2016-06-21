@@ -10,8 +10,7 @@
 //Qt
 #include <QtCore>
 
-class PackageManager : public QObject
-{
+class PackageManager : public QObject {
     Q_OBJECT
 
 private:
@@ -21,9 +20,9 @@ private:
     bool m_sucess = true;
 
 public:
-    explicit PackageManager(QObject *parent = 0);
+    explicit PackageManager(QObject* parent = 0);
 
 public:
-    PPackage getPackage(const QString &namePack);
-
+    PPackage getPackage(const QString& namePack);
 };
+typedef PackageManager* PPackageManager;

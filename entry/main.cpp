@@ -2,16 +2,16 @@
 #include "cgt/cgt.h"
 #include "cgt/emulatecgt.h"
 #include "cgt/proxycgt.h"
-#include "scenemodel/scenemodel.h"
-#include "package/packagemanager.h"
 #include "logger.h"
+#include "package/packagemanager.h"
+#include "scenemodel/scenemodel.h"
 
 //STL
 
 //Qt
 #include <QCoreApplication>
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     logger::initialize();
 
@@ -23,9 +23,9 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APP_PRODUCT);
     QCoreApplication::setApplicationVersion(APP_VERSION);
 
-    PackageManager manager;
-    SceneModel model;
-    model.loadFromSha("test.sha", manager);
+    PPackageManager manager = new PackageManager();
+    SceneModel model(manager);
+    //model.loadFromSha("test.sha", manager);
 
     const QString codeGenFile = "CodeGen.dll";
     const QString makeExe = "make_exe.dll";
@@ -67,14 +67,13 @@ int main(int argc, char *argv[])
     buildProcessProcLib = reinterpret_cast<t_buildProcessProc>(libCodeGen.resolve("buildProcessProc"));
     checkVersionProcLib = reinterpret_cast<t_checkVersionProc>(libCodeGen.resolve("CheckVersionProc"));
 
-    //const QString modelFilePath = "test.json";
-    //qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
-    ////SceneModel model;
-    //if (!model.loadModel(modelFilePath)) {
-    //    qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
-    //    exit(0);
-    //}
-    QString fullPathProjectFile = codePath +  model.getProjectName() + ".dpr";
+    const QString modelFilePath = "test.json";
+    qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
+    if (!model.loadModel(modelFilePath)) {
+        qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
+        exit(0);
+    }
+    QString fullPathProjectFile = codePath + model.getProjectName() + ".dpr";
 
     qInfo("Set params for model.");
     model.setProjectPath(QDir::currentPath());

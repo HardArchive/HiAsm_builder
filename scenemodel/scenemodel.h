@@ -1,10 +1,10 @@
 #pragma once
 
 //Project
-#include "types.h"
-#include "value.h"
 #include "cgt/CGTShare.h"
 #include "package/packagemanager.h"
+#include "types.h"
+#include "value.h"
 
 //STL
 
@@ -12,8 +12,7 @@
 #include <QObject>
 #include <QSet>
 
-class SceneModel: public QObject
-{
+class SceneModel : public QObject {
     Q_OBJECT
     Q_DISABLE_COPY(SceneModel)
 
@@ -25,7 +24,8 @@ private:
     quintptr m_genId = 1;
 
     //Package
-    PPackage m_package;
+    PPackage m_package{};
+    PPackageManager m_packageManager{};
 
     //Map
     MapContainers m_mapContainers;
@@ -62,7 +62,7 @@ private:
     Q_PROPERTY(PSceneModel model READ getModel)
 
 public:
-    explicit SceneModel(QObject *parent = 0);
+    explicit SceneModel(PPackageManager package, QObject* parent = 0);
     virtual ~SceneModel();
 
 private:
@@ -71,7 +71,7 @@ private:
 public:
     //Serialize
     QJsonDocument serialize();
-    void deserialize(const QJsonDocument &doc);
+    void deserialize(const QJsonDocument& doc);
 
     //CGT
     PCodeGenTools getCgt();
@@ -80,12 +80,14 @@ public:
     quintptr genId();
     PSceneModel getModel();
     void initFromCgt(PCodeGenTools cgt, quintptr idMainSDK);
-    bool saveModel(const QString &filePath);
-    bool loadModel(const QString &filePath);
-    bool loadFromSha(const QString &filePath, PackageManager &manager);
+    bool saveModel(const QString& filePath);
+    bool loadModel(const QString& filePath);
+    bool loadFromSha(const QString& filePath);
 
     //Package
+    void setPackage(PPackage package);
     PPackage getPackage();
+    bool loadPackage(const QString &name);
 
     //Map
     void addContainerToMap(PContainer id_sdk);
@@ -114,16 +116,16 @@ public:
     PValue getValueById(quintptr id_value) const;
 
     //Resource
-    const char *addStreamRes(quintptr id_prop);
-    const char *addStringRes(const QString &str);
+    const char* addStreamRes(quintptr id_prop);
+    const char* addStringRes(const QString& str);
     void deleteResources();
     void compileResources();
 
-    int addResList(const QString &filePath);
+    int addResList(const QString& filePath);
     bool resIsEmpty() const;
 
     //Параметры CGT
-    void getCgtParam(CgtParams index, void *buf) const;
+    void getCgtParam(CgtParams index, void* buf) const;
 
     bool getIsDebug() const;
     void setIsDebug(bool isDebug);
@@ -144,26 +146,25 @@ public:
     void setSdeHeight(int sdeHeight);
 
     QString getCodePath() const;
-    void setCodePath(const QString &codePath);
+    void setCodePath(const QString& codePath);
 
     QString getProjectPath() const;
-    void setProjectPath(const QString &projectPath);
+    void setProjectPath(const QString& projectPath);
 
     QString getHiasmVersion() const;
-    void setHiasmVersion(const QString &hiasmVersion);
+    void setHiasmVersion(const QString& hiasmVersion);
 
     QString getUserName() const;
-    void setUserName(const QString &userName);
+    void setUserName(const QString& userName);
 
     QString getUserMail() const;
-    void setUserMail(const QString &userMail);
+    void setUserMail(const QString& userMail);
 
     QString getProjectName() const;
-    void setProjectName(const QString &projectName);
+    void setProjectName(const QString& projectName);
 
     QString getCompiler() const;
-    void setCompiler(const QString &compiler);
-
+    void setCompiler(const QString& compiler);
 };
 
 Q_DECLARE_METATYPE(PSceneModel)
