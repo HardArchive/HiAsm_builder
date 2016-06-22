@@ -135,6 +135,9 @@ int main(int argc, char *argv[])
 
     buildCompliteProc(buildCompliteRec);
 
+    qInfo("Unload make_* library.");
+    libMakeExe.unload();
+
     qInfo("Unload CodeGen library.");
     libCodeGen.unload();
 

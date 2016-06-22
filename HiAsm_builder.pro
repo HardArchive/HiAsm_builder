@@ -11,6 +11,8 @@ CONFIG -= app_bundle
 DESTDIR += "test"
 TEMPLATE = app
 
+DEFINES += HIBUILDER
+
 #Информация о приложении
 CONFIG += embed_manifest_exe
 QMAKE_TARGET_COMPANY = "HiAsm community(c)"
