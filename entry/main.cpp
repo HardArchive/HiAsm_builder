@@ -11,7 +11,24 @@
 //Qt
 #include <QCoreApplication>
 
-int main(int argc, char* argv[])
+bool execApp(const QString &appPath, const QString &args = "")
+{
+    bool res = false;
+    QFileInfo fi(appPath);
+    QString path = fi.absolutePath();
+    QString name = fi.fileName();
+    QString tmpCurrentPath = QDir::currentPath();
+
+    QDir::setCurrent(path);
+    if (QProcess::execute(name + args) >= 0) {
+        res = true;
+    }
+    QDir::setCurrent(tmpCurrentPath);
+
+    return res;
+}
+
+int main(int argc, char *argv[])
 {
     logger::initialize();
 
@@ -34,22 +51,6 @@ int main(int argc, char* argv[])
     const QString makePath = QDir::toNativeSeparators(packagePath + "make/");
     const QString fullPathCodeGen = packagePath + codeGenFile;
     const QString fullPathMakeExe = makePath + makeExe;
-
-    //ru Загружаем make_*.dll в память
-    if (!QFile::exists(fullPathMakeExe)) {
-        qCritical("%s library not found!", qPrintable(makeExe));
-    }
-    QLibrary libMakeExe(fullPathMakeExe);
-    if (!libMakeExe.load()) {
-        qCritical("%s library not found!", qPrintable(makeExe));
-        exit(0);
-    }
-    qInfo("%s library successfully loaded.", qPrintable(makeExe));
-
-    //ru Определение функций
-    buildGetParamsProc = reinterpret_cast<t_buildGetParamsProc>(libMakeExe.resolve("buildGetParamsProc"));
-    buildMakePrj = reinterpret_cast<t_buildMakePrj>(libMakeExe.resolve("buildMakePrj"));
-    buildCompliteProc = reinterpret_cast<t_buildCompliteProc>(libMakeExe.resolve("buildCompliteProc"));
 
     //ru Загружаем CodeGen в память
     if (!QFile::exists(fullPathCodeGen)) {
@@ -95,6 +96,22 @@ int main(int argc, char* argv[])
     model.compileResources();
 
     qInfo("Use make_*.dll library.");
+    //ru Загружаем make_*.dll в память
+    if (!QFile::exists(fullPathMakeExe)) {
+        qCritical("%s library not found!", qPrintable(makeExe));
+    }
+    QLibrary libMakeExe(fullPathMakeExe);
+    if (!libMakeExe.load()) {
+        qCritical("%s library not found!", qPrintable(makeExe));
+        exit(0);
+    }
+    qInfo("%s library successfully loaded.", qPrintable(makeExe));
+
+    //ru Определение функций
+    buildGetParamsProc = reinterpret_cast<t_buildGetParamsProc>(libMakeExe.resolve("buildGetParamsProc"));
+    buildMakePrj = reinterpret_cast<t_buildMakePrj>(libMakeExe.resolve("buildMakePrj"));
+    buildCompliteProc = reinterpret_cast<t_buildCompliteProc>(libMakeExe.resolve("buildCompliteProc"));
+
     TBuildMakePrjRec buildMakePrjRec;
     buildMakePrjRec.compiler = fcgt::strToCString(model.getCompiler());
     buildMakePrjRec.prjFilename = fcgt::strToCString(fullPathProjectFile);
@@ -108,12 +125,13 @@ int main(int argc, char* argv[])
     model.addResList(fullPathProjectFile);
 
     qInfo("Compile project.");
-    QString tmpCurrentPath = QDir::currentPath();
-    QDir::setCurrent("compiler/delphi/");
-    QString pathCompiler = "compiler/delphi/dcc32.exe";
     QString args = QString(" \"%1\" \"-U%2.\" -Q").arg(fullPathProjectFile).arg(QDir::currentPath());
-    QProcess::execute(pathCompiler + args);
-    QDir::setCurrent(tmpCurrentPath);
+
+    if (execApp("compiler/delphi/dcc32.exe", args)) {
+        qInfo() << "Compilation successful.";
+    } else {
+        qWarning() << "Compile error.";
+    }
 
     buildCompliteProc(buildCompliteRec);
 
@@ -122,7 +140,6 @@ int main(int argc, char* argv[])
 
     qInfo("Delete resources.");
     model.deleteResources();
-    //*/
 
     return a.exec();
 }
