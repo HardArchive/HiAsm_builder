@@ -64,14 +64,13 @@ int main(int argc, char *argv[])
     buildProcessProcLib = reinterpret_cast<t_buildProcessProc>(libCodeGen.resolve("buildProcessProc"));
     checkVersionProcLib = reinterpret_cast<t_checkVersionProc>(libCodeGen.resolve("CheckVersionProc"));
 
-
     PPackageManager manager = new PackageManager();
     SceneModel model(manager);
-    model.loadFromSha("test.sha");
+    //model.loadFromSha("test.sha");
 
-    const QString modelFilePath = "test.json";
+    const QString modelFilePath = "test.sha";
     qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
-    if (!model.loadModel(modelFilePath)) {
+    if (!model.loadFromSha(modelFilePath)) {
         qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
         exit(0);
     }
