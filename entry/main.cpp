@@ -68,9 +68,9 @@ int main(int argc, char *argv[])
     SceneModel model(manager);
     //model.loadFromSha("test.sha");
 
-    const QString modelFilePath = "test.sha";
+    const QString modelFilePath = "test.json";
     qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
-    if (!model.loadFromSha(modelFilePath)) {
+    if (!model.loadModel(modelFilePath)) {
         qWarning("Model is not loaded from file: %s", qUtf8Printable(modelFilePath));
         exit(0);
     }
