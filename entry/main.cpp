@@ -59,10 +59,19 @@ int main(int argc, char *argv[])
     }
     qInfo("%s library successfully loaded.", qPrintable(codeGenFile));
 
+    TBuildGetParamsProc buildGetParamsProc = nullptr;
+    TBuildMakePrj buildMakePrj = nullptr;
+    TBuildCompliteProc buildCompliteProc = nullptr;
+    TBuildRunProc buildRunProc = nullptr;
+    TBuildStopProc buildStopProc = nullptr;
+    TBuildPrepareProc buildPrepareProcLib = nullptr;
+    TBuildProcessProc buildProcessProcLib = nullptr;
+    TCheckVersionProc checkVersionProcLib = nullptr;
+
     //ru Определение функций кодогенератора
-    buildPrepareProcLib = reinterpret_cast<t_buildPrepareProc>(libCodeGen.resolve("buildPrepareProc"));
-    buildProcessProcLib = reinterpret_cast<t_buildProcessProc>(libCodeGen.resolve("buildProcessProc"));
-    checkVersionProcLib = reinterpret_cast<t_checkVersionProc>(libCodeGen.resolve("CheckVersionProc"));
+    buildPrepareProcLib = reinterpret_cast<TBuildPrepareProc>(libCodeGen.resolve("buildPrepareProc"));
+    buildProcessProcLib = reinterpret_cast<TBuildProcessProc>(libCodeGen.resolve("buildProcessProc"));
+    checkVersionProcLib = reinterpret_cast<TCheckVersionProc>(libCodeGen.resolve("CheckVersionProc"));
 
     PPackageManager manager = new PackageManager();
     SceneModel model(manager);
@@ -108,9 +117,9 @@ int main(int argc, char *argv[])
     qInfo("%s library successfully loaded.", qPrintable(makeExe));
 
     //ru Определение функций
-    buildGetParamsProc = reinterpret_cast<t_buildGetParamsProc>(libMakeExe.resolve("buildGetParamsProc"));
-    buildMakePrj = reinterpret_cast<t_buildMakePrj>(libMakeExe.resolve("buildMakePrj"));
-    buildCompliteProc = reinterpret_cast<t_buildCompliteProc>(libMakeExe.resolve("buildCompliteProc"));
+    buildGetParamsProc = reinterpret_cast<TBuildGetParamsProc>(libMakeExe.resolve("buildGetParamsProc"));
+    buildMakePrj = reinterpret_cast<TBuildMakePrj>(libMakeExe.resolve("buildMakePrj"));
+    buildCompliteProc = reinterpret_cast<TBuildCompliteProc>(libMakeExe.resolve("buildCompliteProc"));
 
     TBuildMakePrjRec buildMakePrjRec;
     buildMakePrjRec.compiler = fcgt::strToCString(model.getCompiler());
