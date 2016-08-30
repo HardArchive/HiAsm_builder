@@ -40,6 +40,11 @@ int main(int argc, char *argv[])
     QCoreApplication::setApplicationName(APP_PRODUCT);
     QCoreApplication::setApplicationVersion(APP_VERSION);
 
+    PackageManager *manager = new PackageManager();
+    SceneModel model(manager);
+    model.loadFromSha("test.sha");
+
+    /*
     const QString codeGenFile = "CodeGen.dll";
     const QString makeExe = "make_exe.dll";
     const QString packagePath = QDir::toNativeSeparators(QDir::currentPath() + QDir::separator() + "packages/delphi/");
@@ -73,9 +78,8 @@ int main(int argc, char *argv[])
     buildProcessProcLib = reinterpret_cast<TBuildProcessProc>(libCodeGen.resolve("buildProcessProc"));
     checkVersionProcLib = reinterpret_cast<TCheckVersionProc>(libCodeGen.resolve("CheckVersionProc"));
 
-    PPackageManager manager = new PackageManager();
-    SceneModel model(manager);
-    //model.loadFromSha("test.sha");
+
+
 
     const QString modelFilePath = "test.json";
     qInfo("Loading model from file: %s", qUtf8Printable(modelFilePath));
@@ -152,6 +156,7 @@ int main(int argc, char *argv[])
 
     qInfo("Delete resources.");
     model.deleteResources();
+    */
 
     return a.exec();
 }
